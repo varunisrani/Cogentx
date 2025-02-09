@@ -1,4 +1,4 @@
-import streamlit as st
+import gradio as gr
 import os
 from utils import rnd_id
 from crewai_tools import CodeInterpreterTool,ScrapeElementFromWebsiteTool,TXTSearchTool,SeleniumScrapingTool,PGSearchTool,PDFSearchTool,MDXSearchTool,JSONSearchTool,GithubSearchTool,EXASearchTool,DOCXSearchTool,CSVSearchTool,ScrapeWebsiteTool, FileReadTool, DirectorySearchTool, DirectoryReadTool, CodeDocsSearchTool, YoutubeVideoSearchTool,SerperDevTool,YoutubeChannelSearchTool,WebsiteSearchTool
@@ -13,7 +13,7 @@ from langchain_community.tools import YahooFinanceNewsTool
 class MyTool:
     def __init__(self, tool_id, name, description, parameters, **kwargs):
         self.tool_id = tool_id or rnd_id()
-        self.name = name
+        self.name = name 
         self.description = description
         self.parameters = kwargs
         self.parameters_metadata = parameters
@@ -33,11 +33,11 @@ class MyTool:
     def is_parameter_mandatory(self, param_name):
         return self.parameters_metadata.get(param_name, {}).get('mandatory', False)
 
-    def is_valid(self,show_warning=False):
+    def is_valid(self, show_warning=False):
         for param_name, metadata in self.parameters_metadata.items():
             if metadata['mandatory'] and not self.parameters.get(param_name):
                 if show_warning:
-                    st.warning(f"Parameter '{param_name}' is mandatory for tool '{self.name}'")
+                    gr.Warning(f"Parameter '{param_name}' is mandatory for tool '{self.name}'")
                 return False
         return True
 
@@ -402,3 +402,72 @@ TOOL_CLASSES = {
     'PDFSearchTool': MyPDFSearchTool,
     'PGSearchTool': MyPGSearchTool    
 }
+
+# Create Gradio interface
+def create_tool_interface():
+    tool_names = list(TOOL_CLASSES.keys())
+    
+    def process_tool(tool_name, **params):
+        tool_class = TOOL_CLASSES[tool_name]
+        tool = tool_class(**params)
+        result = tool.create_tool()
+        return f"Created {tool_name} successfully: {str(result)}"
+    
+    with gr.Blocks() as interface:
+        gr.Markdown("# AI Tools Interface")
+        
+        with gr.Row():
+            tool_dropdown = gr.Dropdown(choices=tool_names, label="Select Tool")
+            
+        with gr.Row():
+            with gr.Column():
+                # Common parameters
+                tool_id = gr.Textbox(label="Tool ID (optional)")
+                
+                # Tool specific parameters
+                website_url = gr.Textbox(label="Website URL", visible=False)
+                file_path = gr.Textbox(label="File Path", visible=False)
+                api_key = gr.Textbox(label="API Key", visible=False)
+                directory = gr.Textbox(label="Directory", visible=False)
+                
+            with gr.Column():
+                output = gr.Textbox(label="Output")
+        
+        def update_visible_params(tool_name):
+            visible_params = {
+                "website_url": False,
+                "file_path": False,
+                "api_key": False,
+                "directory": False
+            }
+            
+            if tool_name in ["ScrapeWebsiteTool", "WebsiteSearchTool"]:
+                visible_params["website_url"] = True
+            elif tool_name in ["FileReadTool"]:
+                visible_params["file_path"] = True
+            elif tool_name in ["SerperDevTool", "EXASearchTool"]:
+                visible_params["api_key"] = True
+            elif tool_name in ["DirectorySearchTool", "DirectoryReadTool"]:
+                visible_params["directory"] = True
+                
+            return visible_params
+        
+        tool_dropdown.change(
+            fn=update_visible_params,
+            inputs=[tool_dropdown],
+            outputs=[website_url, file_path, api_key, directory]
+        )
+        
+        submit_btn = gr.Button("Create Tool")
+        submit_btn.click(
+            fn=process_tool,
+            inputs=[tool_dropdown, tool_id, website_url, file_path, api_key, directory],
+            outputs=[output]
+        )
+    
+    return interface
+
+# Launch the interface
+if __name__ == "__main__":
+    interface = create_tool_interface()
+    interface.launch()

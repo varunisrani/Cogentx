@@ -1,19 +1,19 @@
-import streamlit as st
-from streamlit import session_state as ss
+import gradio as gr
 from my_agent import MyAgent
 import db_utils
 
 class PageAgents:
     def __init__(self):
         self.name = "Agents"
+        self.agents = db_utils.load_agents()
+        self.crews = db_utils.load_crews()
+        self.editing = False
 
     def create_agent(self, crew=None):
         agent = MyAgent()
-        if 'agents' not in ss:
-            ss.agents = [MyAgent]
-        ss.agents.append(agent)
+        self.agents.append(agent)
         agent.edit = True
-        db_utils.save_agent(agent)  # Save agent to database
+        db_utils.save_agent(agent)
 
         if crew:
             crew.agents.append(agent)
@@ -22,59 +22,54 @@ class PageAgents:
         return agent
 
     def draw(self):
-        with st.container():
-            st.subheader(self.name)
-            editing = False
-            if 'agents' not in ss:
-                ss.agents = db_utils.load_agents()  # Load agents from database
-            if 'crews' not in ss:
-                ss.crews = db_utils.load_crews()  # Load crews from database
+        with gr.Blocks() as interface:
+            gr.Markdown(f"## {self.name}")
 
             # Dictionary to track agent assignment
-            agent_assignment = {agent.id: [] for agent in ss.agents}
+            agent_assignment = {agent.id: [] for agent in self.agents}
 
             # Assign agents to crews
-            for crew in ss.crews:
+            for crew in self.crews:
                 for agent in crew.agents:
                     agent_assignment[agent.id].append(crew.name)
 
-            # Display agents grouped by crew in tabs
-            tabs = ["All Agents"] + ["Unassigned Agents"] + [crew.name for crew in ss.crews]
-            tab_objects = st.tabs(tabs)
-
-            # Display all agents
-            with tab_objects[0]:
-                st.markdown("#### All Agents")
-                for agent in ss.agents:
-                    agent.draw()
-                    if agent.edit:
-                        editing = True
-                st.button('Create agent', on_click=self.create_agent, disabled=editing, key="create_agent_all")
-
-            # Display unassigned agents
-            with tab_objects[1]:
-                st.markdown("#### Unassigned Agents")
-                unassigned_agents = [agent for agent in ss.agents if not agent_assignment[agent.id]]
-                for agent in unassigned_agents:
-                    unique_key = f"{agent.id}_unassigned"
-                    agent.draw(key=unique_key)
-                    if agent.edit:
-                        editing = True
-                st.button('Create agent', on_click=self.create_agent, disabled=editing, key="create_agent_unassigned")
-
-            # Display agents grouped by crew
-            for i, crew in enumerate(ss.crews, 2):
-                with tab_objects[i]:
-                    st.markdown(f"#### {crew.name}")
-                    assigned_agents = [agent for agent in crew.agents]
-                    for agent in assigned_agents:
-                        unique_key = f"{agent.id}_{crew.name}"
-                        agent.draw(key=unique_key)
+            with gr.Tabs() as tabs:
+                # All Agents tab
+                with gr.Tab("All Agents"):
+                    gr.Markdown("#### All Agents")
+                    for agent in self.agents:
+                        agent.draw()
                         if agent.edit:
-                            editing = True
-                    st.button('Create agent', on_click=self.create_agent, disabled=editing, kwargs={'crew': crew}, key=f"create_agent_{crew.name}")
+                            self.editing = True
+                    create_btn = gr.Button("Create agent", interactive=not self.editing)
+                    create_btn.click(fn=self.create_agent)
 
-            if len(ss.agents) == 0:
-                st.write("No agents defined yet.")
-                st.button('Create agent', on_click=self.create_agent, disabled=editing)
+                # Unassigned Agents tab
+                with gr.Tab("Unassigned Agents"):
+                    gr.Markdown("#### Unassigned Agents")
+                    unassigned_agents = [agent for agent in self.agents if not agent_assignment[agent.id]]
+                    for agent in unassigned_agents:
+                        agent.draw(key=f"{agent.id}_unassigned")
+                        if agent.edit:
+                            self.editing = True
+                    create_btn = gr.Button("Create agent", interactive=not self.editing)
+                    create_btn.click(fn=self.create_agent)
 
+                # Crew tabs
+                for crew in self.crews:
+                    with gr.Tab(crew.name):
+                        gr.Markdown(f"#### {crew.name}")
+                        assigned_agents = [agent for agent in crew.agents]
+                        for agent in assigned_agents:
+                            agent.draw(key=f"{agent.id}_{crew.name}")
+                            if agent.edit:
+                                self.editing = True
+                        create_btn = gr.Button("Create agent", interactive=not self.editing)
+                        create_btn.click(fn=lambda c=crew: self.create_agent(crew=c))
+
+            if len(self.agents) == 0:
+                gr.Markdown("No agents defined yet.")
+                create_btn = gr.Button("Create agent", interactive=not self.editing)
+                create_btn.click(fn=self.create_agent)
+
+        return interface

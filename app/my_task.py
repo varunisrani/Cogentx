@@ -1,7 +1,6 @@
+import gradio as gr
 from crewai import Task
-import streamlit as st
-from utils import rnd_id, fix_columns_width
-from streamlit import session_state as ss
+from utils import rnd_id
 from db_utils import save_task, delete_task
 from datetime import datetime
 
@@ -10,22 +9,12 @@ class MyTask:
         self.id = id or "T_" + rnd_id()
         self.description = description or "Identify the next big trend in AI. Focus on identifying pros and cons and the overall narrative."
         self.expected_output = expected_output or "A comprehensive 3 paragraphs long report on the latest AI trends."
-        self.agent = agent or ss.agents[0] if ss.agents else None
+        self.agent = agent
         self.async_execution = async_execution or False
         self.context_from_async_tasks_ids = context_from_async_tasks_ids or None
         self.context_from_sync_tasks_ids = context_from_sync_tasks_ids or None
         self.created_at = created_at or datetime.now().isoformat()
-        self.edit_key = f'edit_{self.id}'
-        if self.edit_key not in ss:
-            ss[self.edit_key] = False
-
-    @property
-    def edit(self):
-        return ss[self.edit_key]
-
-    @edit.setter
-    def edit(self, value):
-        ss[self.edit_key] = value
+        self.edit_mode = False
 
     def get_crewai_task(self, context_from_async_tasks=None, context_from_sync_tasks=None) -> Task:
         context = []
@@ -40,51 +29,87 @@ class MyTask:
             return Task(description=self.description, expected_output=self.expected_output, async_execution=self.async_execution, agent=self.agent.get_crewai_agent())
 
     def delete(self):
-        ss.tasks = [task for task in ss.tasks if task.id != self.id]
         delete_task(self.id)
+        return gr.update(visible=False)
 
-    def is_valid(self, show_warning=False):
+    def is_valid(self):
         if not self.agent:
-            if show_warning:
-                st.warning(f"Task {self.description} has no agent")
-            return False
-        if not self.agent.is_valid(show_warning):
-            return False
-        return True
+            return False, "Task has no agent"
+        agent_valid, agent_msg = self.agent.is_valid()
+        if not agent_valid:
+            return False, agent_msg
+        return True, ""
 
-    def draw(self, key=None):
-        agent_options = [agent.role for agent in ss.agents]
-        expander_title = f"({self.agent.role if self.agent else 'unassigned'}) - {self.description}" if self.is_valid() else f"❗ ({self.agent.role if self.agent else 'unassigned'}) - {self.description}"
-        if self.edit:
-            with st.expander(expander_title, expanded=True):
-                with st.form(key=f'form_{self.id}' if key is None else key):
-                    self.description = st.text_area("Description", value=self.description)
-                    self.expected_output = st.text_area("Expected output", value=self.expected_output)
-                    self.agent = st.selectbox("Agent", options=ss.agents, format_func=lambda x: x.role, index=0 if self.agent is None else agent_options.index(self.agent.role))
-                    self.async_execution = st.checkbox("Async execution", value=self.async_execution)
-                    self.context_from_async_tasks_ids = st.multiselect("Context from async tasks", options=[task.id for task in ss.tasks if task.async_execution], default=self.context_from_async_tasks_ids, format_func=lambda x: [task.description[:120] for task in ss.tasks if task.id == x][0])
-                    self.context_from_sync_tasks_ids = st.multiselect("Context from sync tasks", options=[task.id for task in ss.tasks if not task.async_execution], default=self.context_from_sync_tasks_ids, format_func=lambda x: [task.description[:120] for task in ss.tasks if task.id == x][0])
-                    submitted = st.form_submit_button("Save")
-                    if submitted:
-                        self.set_editable(False)
-        else:
-            fix_columns_width()
-            with st.expander(expander_title):
-                st.markdown(f"**Description:** {self.description}")
-                st.markdown(f"**Expected output:** {self.expected_output}")
-                st.markdown(f"**Agent:** {self.agent.role if self.agent else 'None'}")
-                st.markdown(f"**Async execution:** {self.async_execution}")
-                st.markdown(f"**Context from async tasks:** {', '.join([task.description[:120] for task in ss.tasks if task.id in self.context_from_async_tasks_ids]) if self.context_from_async_tasks_ids else 'None'}")
-                st.markdown(f"**Context from sync tasks:** {', '.join([task.description[:120] for task in ss.tasks if task.id in self.context_from_sync_tasks_ids]) if self.context_from_sync_tasks_ids else 'None'}")
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.button("Edit", on_click=self.set_editable, args=(True,), key=rnd_id())
-                with col2:
-                    st.button("Delete", on_click=self.delete, key=rnd_id())
-                self.is_valid(show_warning=True)
-
-    def set_editable(self, edit):
-        self.edit = edit
+    def save_changes(self, description, expected_output, agent_role, async_execution, context_async, context_sync):
+        self.description = description
+        self.expected_output = expected_output
+        self.agent = next((a for a in self.available_agents if a.role == agent_role), None)
+        self.async_execution = async_execution
+        self.context_from_async_tasks_ids = context_async
+        self.context_from_sync_tasks_ids = context_sync
         save_task(self)
-        if not edit:
-            st.rerun()
+        self.edit_mode = False
+        return self.create_view_components()
+
+    def toggle_edit(self, _):
+        self.edit_mode = not self.edit_mode
+        if self.edit_mode:
+            return self.create_edit_components()
+        return self.create_view_components()
+
+    def create_edit_components(self):
+        with gr.Group():
+            description = gr.Textbox(value=self.description, label="Description")
+            expected_output = gr.Textbox(value=self.expected_output, label="Expected output")
+            agent_dropdown = gr.Dropdown(
+                choices=[agent.role for agent in self.available_agents],
+                value=self.agent.role if self.agent else None,
+                label="Agent"
+            )
+            async_checkbox = gr.Checkbox(value=self.async_execution, label="Async execution")
+            context_async = gr.Dropdown(
+                choices=[task.id for task in self.available_tasks if task.async_execution],
+                value=self.context_from_async_tasks_ids,
+                multiselect=True,
+                label="Context from async tasks"
+            )
+            context_sync = gr.Dropdown(
+                choices=[task.id for task in self.available_tasks if not task.async_execution],
+                value=self.context_from_sync_tasks_ids,
+                multiselect=True,
+                label="Context from sync tasks"
+            )
+            save_btn = gr.Button("Save")
+            save_btn.click(
+                fn=self.save_changes,
+                inputs=[description, expected_output, agent_dropdown, async_checkbox, context_async, context_sync],
+                outputs=[gr.Group()]
+            )
+
+    def create_view_components(self):
+        valid, msg = self.is_valid()
+        title = f"({'❗' if not valid else ''}{self.agent.role if self.agent else 'unassigned'}) - {self.description}"
+        
+        with gr.Group():
+            gr.Markdown(f"**Description:** {self.description}")
+            gr.Markdown(f"**Expected output:** {self.expected_output}")
+            gr.Markdown(f"**Agent:** {self.agent.role if self.agent else 'None'}")
+            gr.Markdown(f"**Async execution:** {self.async_execution}")
+            gr.Markdown(f"**Context from async tasks:** {', '.join([task.description[:120] for task in self.available_tasks if task.id in self.context_from_async_tasks_ids]) if self.context_from_async_tasks_ids else 'None'}")
+            gr.Markdown(f"**Context from sync tasks:** {', '.join([task.description[:120] for task in self.available_tasks if task.id in self.context_from_sync_tasks_ids]) if self.context_from_sync_tasks_ids else 'None'}")
+            
+            with gr.Row():
+                edit_btn = gr.Button("Edit")
+                delete_btn = gr.Button("Delete")
+            
+            if not valid:
+                gr.Markdown(f"⚠️ {msg}")
+                
+            edit_btn.click(fn=self.toggle_edit, inputs=[], outputs=[gr.Group()])
+            delete_btn.click(fn=self.delete, inputs=[], outputs=[gr.Group()])
+
+    def draw(self):
+        """Draw the task interface"""
+        if self.edit_mode:
+            return self.create_edit_components()
+        return self.create_view_components()

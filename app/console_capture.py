@@ -11,13 +11,12 @@ class ConsoleCapture:
         self._lock = threading.Lock()
         self._line_buffer = ""
         self.active = False
-        # Pattern pro veškeré ANSI a speciální znaky
+        # Pattern for ANSI escape codes and control characters
         self.clean_pattern = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-9;]*[ -/]*[@-~])|[\x00-\x1F\x7F-\x9F]')
 
     def clean_text(self, text):
-        """Odstraní všechny ANSI a kontrolní znaky"""
+        """Remove ANSI escape codes and control characters"""
         return self.clean_pattern.sub('', text)
-        #return text
 
     def start(self):
         with self._lock:

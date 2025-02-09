@@ -1,5 +1,4 @@
-import streamlit as st
-from streamlit import session_state as ss
+import gradio as gr
 from db_utils import delete_result, load_results
 from datetime import datetime
 from utils import rnd_id, format_result, generate_printable_view
@@ -7,83 +6,87 @@ from utils import rnd_id, format_result, generate_printable_view
 class PageResults:
     def __init__(self):
         self.name = "Results"
-
-    def draw(self):
-        st.subheader(self.name)
-
-        # Load results if not present in session state
-        if 'results' not in ss:
-            ss.results = load_results()
-
-        # Filters
-        col1, col2 = st.columns(2)
-        with col1:
-            crew_filter = st.multiselect(
-                "Filter by Crew",
-                options=list(set(r.crew_name for r in ss.results)),
-                default=[],
-                key="crew_filter"
-            )
-        with col2:
-            date_filter = st.date_input(
-                "Filter by Date",
-                value=None,
-                key="date_filter"
-            )
-
-        # Apply filters
-        filtered_results = ss.results
+        self.results = load_results()
+        
+    def filter_results(self, crew_filter, date_filter):
+        filtered_results = self.results
+        
         if crew_filter:
             filtered_results = [r for r in filtered_results if r.crew_name in crew_filter]
+            
         if date_filter:
             filter_date = datetime.combine(date_filter, datetime.min.time())
             filtered_results = [r for r in filtered_results if datetime.fromisoformat(r.created_at).date() == date_filter]
-
-        # Sort results by creation time (newest first)
-        filtered_results = sorted(
+            
+        return sorted(
             filtered_results,
             key=lambda x: datetime.fromisoformat(x.created_at),
             reverse=True
         )
 
-        # Display results
-        for result in filtered_results:
-            with st.expander(f"{result.crew_name} - {datetime.fromisoformat(result.created_at).strftime('%Y-%m-%d %H:%M:%S')}", expanded=False):
-                st.markdown("#### Inputs")
-                for key, value in result.inputs.items():
-                    st.text_input(key, value, disabled=True, key=rnd_id())
+    def delete_result_callback(self, result_id):
+        delete_result(result_id)
+        self.results = [r for r in self.results if r.id != result_id]
+        return "Result deleted successfully"
 
-                st.markdown("#### Result")
-                formatted_result = format_result(result.result)
+    def print_view_callback(self, result):
+        html_content = generate_printable_view(
+            result.crew_name,
+            result.result,
+            result.inputs,
+            format_result(result.result),
+            result.created_at
+        )
+        return html_content
 
-                # Show both rendered and raw versions using tabs
-                tab1, tab2 = st.tabs(["Rendered", "Raw"])
-                with tab1:
-                    st.markdown(formatted_result)
-                with tab2:
-                    st.code(formatted_result)
+    def draw(self):
+        with gr.Blocks() as interface:
+            gr.Markdown(f"## {self.name}")
+            
+            with gr.Row():
+                crew_filter = gr.Dropdown(
+                    choices=list(set(r.crew_name for r in self.results)),
+                    multiselect=True,
+                    label="Filter by Crew"
+                )
+                date_filter = gr.Date(label="Filter by Date")
 
-                col1, col2 = st.columns([1, 1])
-                with col1:
-                    if st.button("Delete", key=f"delete_{result.id}"):
-                        delete_result(result.id)
-                        ss.results.remove(result)
-                        st.rerun()
-                with col2:
-                    # Create a button to open the printable view in a new tab
-                    html_content = generate_printable_view(
-                        result.crew_name,
-                        result.result,
-                        result.inputs,
-                        formatted_result,
-                        result.created_at
-                    )
-                    if st.button("Open Printable View", key=f"print_{result.id}"):
-                        js = f"""
-                        <script>
-                            var printWindow = window.open('', '_blank');
-                            printWindow.document.write({html_content!r});
-                            printWindow.document.close();
-                        </script>
-                        """
-                        st.components.v1.html(js, height=0)
+            results_container = gr.HTML()
+
+            def update_results(crew_names, date):
+                filtered = self.filter_results(crew_names, date)
+                html = ""
+                for result in filtered:
+                    formatted_result = format_result(result.result)
+                    html += f"""
+                    <details>
+                        <summary>{result.crew_name} - {datetime.fromisoformat(result.created_at).strftime('%Y-%m-%d %H:%M:%S')}</summary>
+                        <h4>Inputs</h4>
+                    """
+                    for key, value in result.inputs.items():
+                        html += f"<p><b>{key}:</b> {value}</p>"
+                        
+                    html += f"""
+                        <h4>Result</h4>
+                        <div class="tabs">
+                            <div class="rendered">{formatted_result}</div>
+                            <pre><code>{formatted_result}</code></pre>
+                        </div>
+                        <button onclick="deleteResult('{result.id}')">Delete</button>
+                        <button onclick="printResult('{result.id}')">Print View</button>
+                    </details>
+                    """
+                return html
+
+            crew_filter.change(
+                fn=update_results,
+                inputs=[crew_filter, date_filter],
+                outputs=results_container
+            )
+            date_filter.change(
+                fn=update_results,
+                inputs=[crew_filter, date_filter],
+                outputs=results_container
+            )
+
+        return interface

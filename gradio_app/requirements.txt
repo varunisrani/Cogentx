@@ -1,0 +1,4 @@
+gradio>=4.0.0
+python-dotenv
+agentops
+# Note: Additional dependencies may be required based on db_utils and llms implementations

@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-import streamlit as st
 from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
 from langchain_anthropic import ChatAnthropic
@@ -8,8 +7,10 @@ from crewai import LLM
 
 def load_secrets_fron_env():
     load_dotenv(override=True)
-    if "env_vars" not in st.session_state:
-        st.session_state.env_vars = {
+    # Store env vars in a global dictionary instead of streamlit session state
+    global env_vars
+    if not hasattr(globals(), 'env_vars'):
+        env_vars = {
             "OPENAI_API_KEY": os.getenv("OPENAI_API_KEY"),
             "OPENAI_API_BASE": os.getenv("OPENAI_API_BASE", "https://api.openai.com/v1/"),
             "GROQ_API_KEY": os.getenv("GROQ_API_KEY"),
@@ -17,17 +18,17 @@ def load_secrets_fron_env():
             "ANTHROPIC_API_KEY": os.getenv("ANTHROPIC_API_KEY"),
             "OLLAMA_HOST": os.getenv("OLLAMA_HOST"),
         }
-    else:
-        st.session_state.env_vars = st.session_state.env_vars
 
 def switch_environment(new_env_vars):
+    global env_vars
     for key, value in new_env_vars.items():
         if value is not None:
             os.environ[key] = value
-            st.session_state.env_vars[key] = value
+            env_vars[key] = value
 
 def restore_environment():
-    for key, value in st.session_state.env_vars.items():
+    global env_vars
+    for key, value in env_vars.items():
         if value is not None:
             os.environ[key] = value
         elif key in os.environ:
@@ -38,8 +39,8 @@ def safe_pop_env_var(key):
 
 def create_openai_llm(model, temperature):
     switch_environment({
-        "OPENAI_API_KEY": st.session_state.env_vars["OPENAI_API_KEY"],
-        "OPENAI_API_BASE": st.session_state.env_vars["OPENAI_API_BASE"],
+        "OPENAI_API_KEY": env_vars["OPENAI_API_KEY"],
+        "OPENAI_API_BASE": env_vars["OPENAI_API_BASE"],
     })
     api_key = os.getenv("OPENAI_API_KEY")
     api_base = os.getenv("OPENAI_API_BASE")
@@ -51,7 +52,7 @@ def create_openai_llm(model, temperature):
 
 def create_anthropic_llm(model, temperature):
     switch_environment({
-        "ANTHROPIC_API_KEY": st.session_state.env_vars["ANTHROPIC_API_KEY"],
+        "ANTHROPIC_API_KEY": env_vars["ANTHROPIC_API_KEY"],
     })
     api_key = os.getenv("ANTHROPIC_API_KEY")
 
@@ -67,7 +68,7 @@ def create_anthropic_llm(model, temperature):
 
 def create_groq_llm(model, temperature):
     switch_environment({
-        "GROQ_API_KEY": st.session_state.env_vars["GROQ_API_KEY"],
+        "GROQ_API_KEY": env_vars["GROQ_API_KEY"],
     })
     api_key = os.getenv("GROQ_API_KEY")
 
@@ -77,11 +78,11 @@ def create_groq_llm(model, temperature):
         raise ValueError("Groq API key not set in .env file")
 
 def create_ollama_llm(model, temperature):
-    host = st.session_state.env_vars["OLLAMA_HOST"]
+    host = env_vars["OLLAMA_HOST"]
     if host:
         switch_environment({
-            "OPENAI_API_KEY": "ollama",  # Nastaví OpenAI API klíč na "ollama"
-            "OPENAI_API_BASE": host,    # Nastaví OpenAI API Base na hodnotu OLLAMA_HOST
+            "OPENAI_API_KEY": "ollama",
+            "OPENAI_API_BASE": host,
         })
         return LLM(model=model, temperature=temperature, base_url=host)
     else:
@@ -90,7 +91,7 @@ def create_ollama_llm(model, temperature):
 def create_lmstudio_llm(model, temperature):
     switch_environment({
         "OPENAI_API_KEY": "lm-studio",
-        "OPENAI_API_BASE": st.session_state.env_vars["LMSTUDIO_API_BASE"],
+        "OPENAI_API_BASE": env_vars["LMSTUDIO_API_BASE"],
     })
     api_base = os.getenv("OPENAI_API_BASE")
 
@@ -136,7 +137,7 @@ def create_llm(provider_and_model, temperature=0.15):
 
     if create_llm_func:
         llm = create_llm_func(model, temperature)
-        restore_environment()  # Obnoví původní prostředí po vytvoření LLM
+        restore_environment()  # Restore original environment after creating LLM
         return llm
     else:
         raise ValueError(f"LLM provider {provider} is not recognized or not supported")

@@ -1,4 +1,3 @@
-import sqlite3
 import os
 import json
 from my_tools import TOOL_CLASSES
@@ -16,9 +15,6 @@ DB_URL = os.getenv('DB_URL', DEFAULT_SQLITE_URL)
 engine = create_engine(DB_URL, echo=False)
 
 def get_db_connection():
-    # conn = sqlite3.connect(DB_NAME)
-    # conn.row_factory = sqlite3.Row
-    # return conn
     """
     Return a context-managed connection from the SQLAlchemy engine.
     """
@@ -42,11 +38,7 @@ def initialize_db():
     """
     create_tables()
 
-
 def save_entity(entity_type, entity_id, data):
-    # For SQLite ≥ 3.24 and for Postgres, we can do:
-    #   INSERT ... ON CONFLICT(id) DO UPDATE ...
-    # to emulate "INSERT OR REPLACE"
     upsert_sql = text('''
         INSERT INTO entities (id, entity_type, data)
         VALUES (:id, :etype, :data)
@@ -69,7 +61,6 @@ def load_entities(entity_type):
     query = text('SELECT id, data FROM entities WHERE entity_type = :etype')
     with get_db_connection() as conn:
         result = conn.execute(query, {"etype": entity_type})
-        # result.mappings() gives us rows as dicts (if using SQLAlchemy 1.4+)
         rows = result.mappings().all()
     return [(row["id"], json.loads(row["data"])) for row in rows]
 
@@ -106,7 +97,7 @@ def save_agent(agent):
         'llm_provider_model': agent.llm_provider_model,
         'temperature': agent.temperature,
         'max_iter': agent.max_iter,
-        'tool_ids': [tool.tool_id for tool in agent.tools]  # Save tool IDs
+        'tool_ids': [tool.tool_id for tool in agent.tools]
     }
     save_entity('agent', agent.id, data)
 
@@ -163,7 +154,7 @@ def save_crew(crew):
         'memory': crew.memory,
         'cache': crew.cache,
         'planning': crew.planning,
-        'max_rpm' : crew.max_rpm,
+        'max_rpm': crew.max_rpm,
         'manager_llm': crew.manager_llm,
         'manager_agent_id': crew.manager_agent.id if crew.manager_agent else None,
         'created_at': crew.created_at
@@ -179,20 +170,20 @@ def load_crews():
     for row in rows:
         data = row[1]
         crew = MyCrew(
-            id=row[0], 
-            name=data['name'], 
-            process=data['process'], 
-            verbose=data['verbose'], 
-            created_at=data['created_at'], 
-            memory=data.get('memory'),
-            cache=data.get('cache'),
-            planning=data.get('planning'),
-            max_rpm=data.get('max_rpm'), 
+            id=row[0],
+            name=data.get('name', 'New Crew'),
+            process=data.get('process', 'sequential'),
+            verbose=data.get('verbose', True),
+            created_at=data.get('created_at'),
+            memory=data.get('memory', False),
+            cache=data.get('cache', True),
+            planning=data.get('planning', False),
+            max_rpm=data.get('max_rpm', 1000),
             manager_llm=data.get('manager_llm'),
             manager_agent=agents_dict.get(data.get('manager_agent_id'))
         )
-        crew.agents = [agents_dict[agent_id] for agent_id in data['agent_ids'] if agent_id in agents_dict]
-        crew.tasks = [tasks_dict[task_id] for task_id in data['task_ids'] if task_id in tasks_dict]
+        crew.agents = [agents_dict[agent_id] for agent_id in data.get('agent_ids', []) if agent_id in agents_dict]
+        crew.tasks = [tasks_dict[task_id] for task_id in data.get('task_ids', []) if task_id in tasks_dict]
         crews.append(crew)
     return sorted(crews, key=lambda x: x.created_at)
 
@@ -223,11 +214,9 @@ def delete_tool(tool_id):
 
 def export_to_json(file_path):
     with get_db_connection() as conn:
-        # Use SQLAlchemy's text() for raw SQL
         query = text('SELECT * FROM entities')
         result = conn.execute(query)
         
-        # Convert to list of dictionaries
         rows = [
             {
                 'id': row.id,
@@ -237,7 +226,6 @@ def export_to_json(file_path):
             for row in result
         ]
 
-        # Write to file
         with open(file_path, 'w') as f:
             json.dump(rows, f, indent=4)
 
@@ -247,7 +235,6 @@ def import_from_json(file_path):
 
     with get_db_connection() as conn:
         for entity in data:
-            # Use SQLAlchemy's text() for raw SQL with parameters
             upsert_sql = text('''
                 INSERT INTO entities (id, entity_type, data)
                 VALUES (:id, :etype, :data)
@@ -266,9 +253,8 @@ def import_from_json(file_path):
             )
             
         conn.commit()
-        
+
 def save_result(result):
-    """Save a result to the database."""
     data = {
         'crew_id': result.crew_id,
         'crew_name': result.crew_name,
@@ -279,7 +265,6 @@ def save_result(result):
     save_entity('result', result.id, data)
 
 def load_results():
-    """Load all results from the database."""
     from result import Result
     rows = load_entities('result')
     results = []
@@ -297,5 +282,4 @@ def load_results():
     return sorted(results, key=lambda x: x.created_at, reverse=True)
 
 def delete_result(result_id):
-    """Delete a result from the database."""
     delete_entity('result', result_id)

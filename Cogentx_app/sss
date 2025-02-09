@@ -1,0 +1,345 @@
+import streamlit as st
+from crewai import Agent, Task, Crew, Process
+from crewai import LLM
+from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
+from langchain_anthropic import ChatAnthropic
+from dotenv import load_dotenv
+import os
+from crewai_tools import *
+import json
+from datetime import datetime
+from langchain.tools import Tool
+from crewai.tools import BaseTool
+
+
+
+
+
+load_dotenv()
+
+def create_lmstudio_llm(model, temperature):
+    api_base = os.getenv('LMSTUDIO_API_BASE')
+    os.environ["OPENAI_API_KEY"] = "lm-studio"
+    os.environ["OPENAI_API_BASE"] = api_base
+    if api_base:
+        return ChatOpenAI(openai_api_key='lm-studio', openai_api_base=api_base, temperature=temperature)
+    else:
+        raise ValueError("LM Studio API base not set in .env file")
+
+def create_openai_llm(model, temperature):
+    safe_pop_env_var('OPENAI_API_KEY')
+    safe_pop_env_var('OPENAI_API_BASE')
+    load_dotenv(override=True)
+    api_key = os.getenv('OPENAI_API_KEY')
+    api_base = os.getenv('OPENAI_API_BASE', 'https://api.openai.com/v1/')
+    if api_key:
+        return ChatOpenAI(openai_api_key=api_key, openai_api_base=api_base, model_name=model, temperature=temperature)
+    else:
+        raise ValueError("OpenAI API key not set in .env file")
+
+def create_groq_llm(model, temperature):
+    api_key = os.getenv('GROQ_API_KEY')
+    if api_key:
+        return ChatGroq(groq_api_key=api_key, model_name=model, temperature=temperature)
+    else:
+        raise ValueError("Groq API key not set in .env file")
+
+def create_anthropic_llm(model, temperature):
+    api_key = os.getenv('ANTHROPIC_API_KEY')
+    if api_key:
+        return ChatAnthropic(anthropic_api_key=api_key, model_name=model, temperature=temperature)
+    else:
+        raise ValueError("Anthropic API key not set in .env file")
+
+def safe_pop_env_var(key):
+    try:
+        os.environ.pop(key)
+    except KeyError:
+        pass
+        
+LLM_CONFIG = {
+    "OpenAI": {
+        "create_llm": create_openai_llm
+    },
+    "Groq": {
+        "create_llm": create_groq_llm
+    },
+    "LM Studio": {
+        "create_llm": create_lmstudio_llm
+    },
+    "Anthropic": {
+        "create_llm": create_anthropic_llm
+    }
+}
+
+def create_llm(provider_and_model="OpenAI: gpt-4o-mini", temperature=0.7):
+    """Create an LLM instance based on provider and model."""
+    if isinstance(provider_and_model, str) and ":" in provider_and_model:
+        provider, model = provider_and_model.split(": ")
+        create_llm_func = LLM_CONFIG.get(provider, {}).get("create_llm")
+        if create_llm_func:
+            return create_llm_func(model, temperature)
+    
+    # Default to CrewAI's LLM with OpenAI
+    return LLM(
+        api_key=os.getenv("OPENAI_API_KEY"),
+        model="gpt-4o-mini",
+        temperature=temperature
+    )
+
+class DataProcessingTool(BaseTool):
+    name: str = "Data Processing"
+    description: str = "Process and analyze data using LLM and statistical methods"
+
+    def _run(self, data: str) -> str:
+        # Process data using LLM
+        return f"Processing data using LLM: {data}"
+
+class ReportGenerationTool(BaseTool):
+    name: str = "Report Generation"
+    description: str = "Generate detailed reports from analyzed data using LLM"
+
+    def _run(self, data: str) -> str:
+        # Generate report using LLM
+        return f"Generating report using LLM from: {data}"
+
+def load_tools():
+    """Load available tools for agents"""
+    return [
+        DataProcessingTool(),
+        ReportGenerationTool()
+    ]
+
+def load_agents(user_requirements):
+    """Load agents based on user requirements"""
+    llm = create_llm()
+    tools = load_tools()
+    
+    # Create CEO Agent as the strategic overseer
+    ceo_agent = Agent(
+        role="CEO Agent",
+        backstory=f"""As the strategic overseer, I analyze user requirements and coordinate the development process.
+        The current requirement is: {user_requirements}
+        I ensure all agents work together effectively to create this specific AI solution.""",
+        goal="""To transform user requirements into a functional AI agent by coordinating the team:
+        1. Analyze and validate requirements
+        2. Oversee the development process
+        3. Ensure quality and coherence""",
+        allow_delegation=True,
+        verbose=True,
+        llm=llm
+    )
+
+    # Regular agents list with requirement-specific goals
+    agents = [
+        Agent(
+            role="Requirements Analyst",
+            backstory=f"""I analyze and refine user requirements for AI agent creation.
+            Current requirement: {user_requirements}
+            I specialize in understanding user needs and converting them into technical specifications.""",
+            goal="""To create detailed specifications for AI agent development:
+            1. Extract key requirements
+            2. Identify necessary capabilities
+            3. Create technical specifications""",
+            allow_delegation=True,
+            verbose=True,
+            llm=llm,
+            tools=tools  # Pass the list of tool objects
+        ),
+        Agent(
+            role="Architecture Specialist",
+            backstory=f"""I design the AI agent's architecture and capabilities based on specific requirements.
+            Current requirement: {user_requirements}
+            I determine the best approaches and methods to implement the required functionality.""",
+            goal="""To design optimal AI agent architecture:
+            1. Design core components
+            2. Define processing logic
+            3. Plan data flows""",
+            allow_delegation=True,
+            verbose=True,
+            llm=llm
+        ),
+        Agent(
+            role="Implementation Agent",
+            backstory=f"""I coordinate the implementation of AI agents based on specific requirements.
+            Current requirement: {user_requirements}
+            I translate architectural designs into concrete implementation plans.""",
+            goal="""To implement AI agents according to specifications:
+            1. Create implementation plan
+            2. Define component interactions
+            3. Specify testing approach""",
+            allow_delegation=True,
+            verbose=True,
+            llm=llm
+        )
+    ]
+    return agents, ceo_agent
+
+def format_output(agents, ceo_agent, tasks, tools, result):
+    """Format the output into a structured JSON"""
+    try:
+        # Parse the raw result if it's in JSON format
+        if isinstance(result, str) and result.strip().startswith('{'):
+            result_json = json.loads(result)
+        else:
+            # Handle CrewOutput object
+            if hasattr(result, 'tasks_output'):
+                result_json = {
+                    'tasks_results': [
+                        {
+                            'task': task.description,
+                            'output': task.raw,
+                            'agent': task.agent
+                        } for task in result.tasks_output
+                    ]
+                }
+            else:
+                result_json = {'raw_output': str(result)}
+
+        output = {
+            "metadata": {
+                "timestamp": datetime.now().isoformat(),
+                "project": "AI Agent Creator"
+            },
+            "solution": {
+                "agents": [
+                    {
+                        "role": agent.role,
+                        "backstory": agent.backstory,
+                        "goal": agent.goal
+                    } for agent in [*agents, ceo_agent]
+                ],
+                "tasks": [
+                    {
+                        "description": task.description,
+                        "expected_output": task.expected_output,
+                        "assigned_to": task.agent.role if hasattr(task.agent, 'role') else str(task.agent)
+                    } for task in tasks
+                ],
+                "execution_result": result_json
+            }
+        }
+        return output
+    except Exception as e:
+        return {
+            "error": f"Error formatting output: {str(e)}",
+            "raw_result": str(result)
+        }
+
+def load_tasks(agents, ceo_agent, user_requirements):
+    """Load tasks based on user requirements"""
+    tasks = [
+        Task(
+            description=f"""Analyze the following user requirements and create detailed specifications:
+            User Requirements: {user_requirements}
+            
+            Create a comprehensive analysis including:
+            1. Core functionality needed for this specific use case
+            2. Required capabilities to fulfill the user's needs
+            3. Processing requirements for the requested features
+            
+            Focus on the specific requirements and ensure all user needs are addressed.""",
+            expected_output="Detailed specifications in JSON format",
+            agent=next(agent for agent in agents if agent.role == "Requirements Analyst")
+        ),
+        Task(
+            description=f"""Design the AI agent architecture specifically for:
+            {user_requirements}
+            
+            Include:
+            1. Core components design tailored to requirements
+            2. Processing logic for the specific use case
+            3. Data flow patterns optimized for the requested functionality""",
+            expected_output="Architecture design in JSON format",
+            agent=next(agent for agent in agents if agent.role == "Architecture Specialist")
+        ),
+        Task(
+            description=f"""Create implementation plan for the AI agent that will:
+            {user_requirements}
+            
+            Detail:
+            1. Component implementation details specific to requirements
+            2. Integration steps for the requested functionality
+            3. Testing strategy for the specific use case""",
+            expected_output="Implementation plan in JSON format",
+            agent=next(agent for agent in agents if agent.role == "Implementation Agent")
+        ),
+        Task(
+            description=f"""Review and validate the complete solution for:
+            {user_requirements}
+            
+            Ensure:
+            1. All specific user requirements are met
+            2. Architecture is sound for this use case
+            3. Implementation plan is feasible for the requested functionality""",
+            expected_output="Validation report in JSON format",
+            agent=ceo_agent
+        )
+    ]
+    return tasks
+
+def main():
+    st.title("AI Agent Creator")
+    st.markdown("""
+    ### Welcome to the AI Agent Creator
+    Describe what kind of AI agent you need, and our team will design and implement it specifically for your requirements.
+    """)
+
+    user_prompt = st.text_area(
+        "What kind of AI agent would you like to create?",
+        placeholder="Example: I need an AI agent that can search the web, process data, and generate reports about the latest technology trends.",
+        help="Describe your specific requirements - what should the AI agent be able to do?"
+    )
+
+    if st.button("Create AI Agent"):
+        if not user_prompt:
+            st.warning("Please describe your requirements.")
+            return
+
+        with st.spinner("Creating your customized AI agent..."):
+            try:
+                agents, ceo_agent = load_agents(user_prompt)
+                tasks = load_tasks(agents, ceo_agent, user_prompt)
+                tools = load_tools()
+                
+                crew = Crew(
+                    agents=agents,
+                    tasks=tasks,
+                    process=Process.sequential,
+                    manager_agent=ceo_agent
+                )
+
+                result = crew.kickoff()
+                output = format_output(agents, ceo_agent, tasks, tools, result)
+                
+                st.success("Your customized AI agent has been created successfully!")
+                
+                # Display the results in organized sections
+                with st.expander("Solution Overview", expanded=True):
+                    st.subheader("Agents and Their Roles")
+                    for agent in output["solution"]["agents"]:
+                        st.markdown(f"""
+                        **{agent['role']}**
+                        - Goal: {agent['goal']}
+                        """)
+                    
+                    st.subheader("Tasks and Results")
+                    for task in output["solution"]["execution_result"].get('tasks_results', []):
+                        with st.expander(f"Task by {task['agent']}", expanded=False):
+                            st.markdown("**Description:**")
+                            st.write(task['task'])
+                            st.markdown("**Output:**")
+                            try:
+                                # Try to parse and display JSON
+                                json_output = json.loads(task['output'])
+                                st.json(json_output)
+                            except:
+                                # If not JSON, display as text
+                                st.write(task['output'])
+                    
+            except Exception as e:
+                st.error(f"An error occurred: {str(e)}")
+
+if __name__ == '__main__':
+    main()

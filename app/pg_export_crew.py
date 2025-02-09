@@ -1,5 +1,4 @@
-import streamlit as st
-from streamlit import session_state as ss
+import gradio as gr
 import zipfile
 import os
 import re
@@ -77,7 +76,7 @@ Task(
 
         placeholders = self.get_placeholders_from_crew(crew)
         placeholder_inputs = "\n    ".join([
-            f'{placeholder} = st.text_input({json_dumps_python(placeholder.capitalize())})'
+            f'with gr.Row():\n        {placeholder} = gr.Textbox(label={json_dumps_python(placeholder.capitalize())})'
             for placeholder in placeholders
         ])
         placeholders_dict = ", ".join([f'{json_dumps_python(placeholder)}: {placeholder}' for placeholder in placeholders])
@@ -89,7 +88,7 @@ Task(
             manager_llm_definition = f'manager_agent=next(agent for agent in agents if agent.role == {json_dumps_python(crew.manager_agent.role)})'
         
         app_content = f"""
-import streamlit as st
+import gradio as gr
 from crewai import Agent, Task, Crew, Process
 from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
@@ -179,9 +178,7 @@ def load_tasks(agents):
     ]
     return tasks
 
-def main():
-    st.title({json_dumps_python(crew.name)})
-
+def run_crew(*args):
     agents = load_agents()
     tasks = load_tasks(agents)
     crew = Crew(
@@ -195,24 +192,36 @@ def main():
         {manager_llm_definition}
     )
 
+    placeholders = dict(zip({json_dumps_python(placeholders)}, args))
+    
+    try:
+        result = crew.kickoff(inputs=placeholders)
+        if hasattr(result, 'raw'):
+            return result.raw, str(result)
+        return str(result), str(result)
+    except Exception as e:
+        return f"Error: {{str(e)}}", f"Error: {{str(e)}}"
+
+with gr.Blocks(title={json_dumps_python(crew.name)}) as demo:
+    gr.Markdown("# " + {json_dumps_python(crew.name)})
+    
     {placeholder_inputs}
+    
+    with gr.Row():
+        run_btn = gr.Button("Run")
+        
+    with gr.Row():
+        output = gr.Textbox(label="Final Output")
+        full_output = gr.Textbox(label="Full Output", visible=False)
+        
+    run_btn.click(
+        fn=run_crew,
+        inputs=[{", ".join(placeholders)}],
+        outputs=[output, full_output]
+    )
 
-    placeholders = {{
-        {placeholders_dict}
-    }}
-        with st.spinner("Running crew..."):
-            try:
-                result = crew.kickoff(inputs=placeholders)
-                with st.expander("Final output", expanded=True):
-                    if hasattr(result, 'raw'):
-                        st.write(result.raw)                
-                with st.expander("Full output", expanded=False):
-                    st.write(result)
-            except Exception as e:
-                st.error(f"An error occurred: {{str(e)}}")
-
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    demo.launch()
 """
         with open(os.path.join(output_dir, 'app.py'), 'w') as f:
             f.write(app_content)
@@ -263,7 +272,7 @@ source "$SCRIPT_DIR/venv/bin/activate" || { echo "Failed to activate venv"; exit
 
 cd "$SCRIPT_DIR"
 
-streamlit run app.py --server.headless True
+python app.py
 """
         with open(os.path.join(output_dir, 'run.sh'), 'w') as f:
             f.write(run_sh_content)
@@ -304,8 +313,8 @@ call venv\\Scripts\\activate || (
     exit /b 1
 )
 
-:: Run the Streamlit app
-streamlit run app.py --server.headless true
+:: Run the app
+python app.py
 """
         with open(os.path.join(output_dir, 'run.bat'), 'w') as f:
             f.write(run_bat_content)
@@ -467,59 +476,78 @@ streamlit run app.py --server.headless true
         return crew
 
     def draw(self):
-        st.subheader(self.name)
+        with gr.Blocks() as demo:
+            gr.Markdown(f"# {self.name}")
 
-        # Full JSON Export Button
-        if st.button("Export everything to json"):
-            current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
-            file_path = f"all_crews_{current_datetime}.json"
-            db_utils.export_to_json(file_path)
-            with open(file_path, "rb") as fp:
-                st.download_button(
-                    label="Download All Crews JSON",
-                    data=fp,
-                    file_name=file_path,
-                    mime="application/json"
-                )
+            # Full JSON Export Button
+            with gr.Row():
+                export_all_btn = gr.Button("Export everything to json")
+                export_all_output = gr.File(label="Download All Crews JSON")
 
-        # JSON Import Button
-        uploaded_file = st.file_uploader("Import JSON file", type="json")
-        if uploaded_file is not None:
-            json_data = json.load(uploaded_file)
-            
-            if isinstance(json_data, list):  # Full database export
-                with open("uploaded_file.json", "w") as f:
-                    json.dump(json_data, f)
-                db_utils.import_from_json("uploaded_file.json")
-                st.success("Full database JSON file imported successfully!")
-            elif isinstance(json_data, dict) and 'id' in json_data:  # Single crew export
-                imported_crew = self.import_crew_from_json(json_data)
-                st.success(f"Crew '{imported_crew.name}' imported successfully!")
+            def export_all():
+                current_datetime = datetime.now().strftime("%Y%m%d_%H%M%S")
+                file_path = f"all_crews_{current_datetime}.json"
+                db_utils.export_to_json(file_path)
+                return file_path
+
+            export_all_btn.click(fn=export_all, outputs=export_all_output)
+
+            # JSON Import
+            with gr.Row():
+                upload_json = gr.File(label="Import JSON file", file_types=[".json"])
+                import_status = gr.Textbox(label="Import Status")
+
+            def handle_import(file):
+                if file is None:
+                    return "No file uploaded"
+                
+                try:
+                    with open(file.name, 'r') as f:
+                        json_data = json.load(f)
+                    
+                    if isinstance(json_data, list):  # Full database export
+                        db_utils.import_from_json(file.name)
+                        return "Full database JSON file imported successfully!"
+                    elif isinstance(json_data, dict) and 'id' in json_data:  # Single crew export
+                        imported_crew = self.import_crew_from_json(json_data)
+                        return f"Crew '{imported_crew.name}' imported successfully!"
+                    else:
+                        return "Invalid JSON format. Please upload a valid crew or full database export file."
+                except Exception as e:
+                    return f"Error importing file: {str(e)}"
+
+            upload_json.change(fn=handle_import, inputs=[upload_json], outputs=[import_status])
+
+            if hasattr(ss, 'crews') and len(ss.crews) > 0:
+                crew_names = [crew.name for crew in ss.crews]
+                with gr.Row():
+                    crew_dropdown = gr.Dropdown(choices=crew_names, label="Select crew to export")
+                
+                with gr.Row():
+                    export_app_btn = gr.Button("Export singlepage app")
+                    export_json_btn = gr.Button("Export crew to JSON")
+                    export_output = gr.File(label="Download Export")
+
+                def export_app(crew_name):
+                    if crew_name:
+                        zip_path = self.create_export(crew_name)
+                        return zip_path
+                    return None
+
+                def export_crew_json(crew_name):
+                    if crew_name:
+                        selected_crew = next((crew for crew in self.crews if crew.name == crew_name), None)
+                        if selected_crew:
+                            crew_json = self.export_crew_to_json(selected_crew)
+                            json_path = f"{crew_name}_export.json"
+                            with open(json_path, 'w') as f:
+                                json.dump(crew_json, f, indent=2)
+                            return json_path
+                    return None
+
+                export_app_btn.click(fn=export_app, inputs=[crew_dropdown], outputs=[export_output])
+                export_json_btn.click(fn=export_crew_json, inputs=[crew_dropdown], outputs=[export_output])
             else:
-                st.error("Invalid JSON format. Please upload a valid crew or full database export file.")
+                gr.Markdown("No crews defined yet.")
 
-        if 'crews' not in ss or len(ss.crews) == 0:
-            st.write("No crews defined yet.")
-        else:
-            crew_names = [crew.name for crew in ss.crews]
-            selected_crew_name = st.selectbox("Select crew to export", crew_names)
-            
-            if st.button("Export singlepage app"):
-                zip_path = self.create_export(selected_crew_name)
-                with open(zip_path, "rb") as fp:
-                    st.download_button(
-                        label="Download Exported App",
-                        data=fp,
-                        file_name=f"{selected_crew_name}_app.zip",
-                        mime="application/zip"
-                    )        
-            if st.button("Export crew to JSON"):
-                selected_crew = next((crew for crew in ss.crews if crew.name == selected_crew_name), None)
-                if selected_crew:
-                    crew_json = self.export_crew_to_json(selected_crew)
-                    st.download_button(
-                        label="Download Crew JSON",
-                        data=crew_json,
-                        file_name=f"{selected_crew_name}_export.json",
-                        mime="application/json"
-                    )
+        return interface
