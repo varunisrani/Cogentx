@@ -161,165 +161,123 @@ def load_tasks(agents, ceo_agent, user_requirements):
             description=f"""First, analyze these specific user requirements and identify EXACTLY what kind of agent is needed:
 User Requirements: {user_requirements}
 
-Create a focused analysis that identifies:
-1. Core functionality needed
-2. Minimum number of agents required
-3. Essential tools needed (ONLY select from the available tools list below - if a specific tool isn't available, use CustomApiTool or CustomCodeInterpreterTool)
-4. Optimal process type (sequence/horizontal)
-
-Available Tools List:
-- ScrapeWebsiteTool - for web scraping
-- SerperDevTool - for search results
-- WebsiteSearchTool - for website searching
-- ScrapeWebsiteToolEnhanced - for advanced scraping
-- SeleniumScrapingTool - for dynamic website scraping
-- ScrapeElementFromWebsiteTool - for specific element scraping
-- CustomApiTool - for custom API integrations
-- codeInterpreterTool - for code interpretation
-- CustomCodeInterpreterTool - for custom code execution
-- FileReadTool - for reading files
-- CustomFileWriteTool - for writing files
-- DirectorySearchTool - for searching directories
-- DirectoryReadTool - for reading directories
-- YoutubeVideoSearchTool - for YouTube video search
-- YoutubeChannelSearchTool - for YouTube channel search
-- GithubSearchTool - for GitHub search
-- CodeDocsSearchTool - for code documentation search
-- YahooFinanceNewsTool - for financial news
-- TXTSearchTool - for text file search
-- CSVSearchTool - for CSV file search
-- CSVSearchToolEnhanced - for advanced CSV search
-- DOCXSearchTool - for Word document search
-- EXASearchTool - for EXA file search
-- JSONSearchTool - for JSON file search
-- MDXSearchTool - for MDX file search
-- PDFSearchTool - for PDF file search
-
-Write your analysis in clear, simple text. Focus ONLY on what's explicitly mentioned in the user requirements.""",
-            expected_output="Text Analysis of Requirements",
+Your analysis must ONLY focus on what's explicitly mentioned in the user requirements.""",
+            expected_output="Initial Requirements Analysis JSON",
             agent=next(agent for agent in agents if agent.role == "Requirements Analyst")
         ),
         Task(
-            description=f"""Based on the initial analysis and {user_requirements}, create a minimal technical specification.
-Write in clear text format:
-1. Minimum necessary components
-2. Tool selection (ONLY from the available tools list - if needed functionality isn't available in standard tools, specify how to implement it using CustomApiTool or CustomCodeInterpreterTool)
-3. Efficient process flow
-4. Resource optimization
-
-Remember: If you need functionality not covered by standard tools, use:
-- CustomApiTool - for external API integrations
-- CustomCodeInterpreterTool - for custom code execution
-- Do NOT suggest external tools outside the available list""",
-            expected_output="Technical Specification Text",
+            description=f"""Based on the initial analysis and {user_requirements}, create a technical specification that ONLY includes what's needed.
+Focus ONLY on what's explicitly needed for {user_requirements}.""",
+            expected_output="Technical Specification JSON",
             agent=next(agent for agent in agents if agent.role == "Architecture Specialist")
         ),
         Task(
-            description=f"""Create an optimized implementation plan that addresses ONLY what's needed for {user_requirements}.
-Write in clear text format:
-1. Minimal agent usage
-2. Tool utilization (ONLY use tools from the available list - use CustomApiTool or CustomCodeInterpreterTool for custom needs)
-3. Resource optimization
-4. Clear task dependencies
-
-Remember: Stay within the available tools ecosystem. If you need custom functionality:
-1. Use CustomApiTool for API integrations
-2. Use CustomCodeInterpreterTool for custom code execution
-3. DO NOT suggest external tools""",
-            expected_output="Implementation Plan Text",
+            description=f"""Create an implementation plan that addresses ONLY what's needed for {user_requirements}.
+Everything must tie directly to {user_requirements}.""",
+            expected_output="Implementation Plan JSON",
             agent=next(agent for agent in agents if agent.role == "Implementation Agent")
         ),
         Task(
-            description=f"""Based on all previous analyses, create a final solution in JSON format with these exact fields:
+            description=f"""Review all previous analyses and create a solution following EXACTLY this format:
 
-1. Crew creation details:
-Name: [simple id name]
-Process: [sequence/horizontal]
-Agents: [list of required agents]
-Tasks: [list of required tasks]
-Manager LLM: [LLM model name]
-Manager Agent: [managing agent name]
-Verbose: [true/false]
-Memory: [enabled/disabled]
-Cache: [enabled/disabled]
-Planning: [planning approach]
+Crew creation details:
+Name (just id, it doesn't affect anything)
+Process [choose: sequence/horizontal]
+Agents [list all required agents with their specific roles]
+Tasks [list all required tasks with their specific purposes]
+Manager LLM
+Manager Agent
+Verbose
+Memory
+Cache
+Planning
 Max req/min: 1000
 
-2. Tools:
-CRITICAL: You must ONLY select tools from this list. If you need custom functionality:
-- Use CustomApiTool for API integrations
-- Use CustomCodeInterpreterTool for custom code execution
-DO NOT suggest or use any external tools not in this list:
+Available Tools (ONLY use these, no others allowed):
+- ScrapeWebsiteTool (web scraping)
+- SerperDevTool (search operations)
+- WebsiteSearchTool (website searching)
+- ScrapeWebsiteToolEnhanced (advanced scraping)
+- SeleniumScrapingTool (dynamic website scraping)
+- ScrapeElementFromWebsiteTool (specific element scraping)
+- CustomApiTool (API integrations)
+- codeInterpreterTool (code interpretation)
+- CustomCodeInterpreterTool (custom code execution)
+- FileReadTool (file reading)
+- CustomFileWriteTool (file writing)
+- DirectorySearchTool (directory searching)
+- DirectoryReadTool (directory reading)
+- YoutubeVideoSearchTool (YouTube video search)
+- YoutubeChannelSearchTool (YouTube channel search)
+- GithubSearchTool (GitHub searching)
+- CodeDocsSearchTool (code documentation search)
+- YahooFinanceNewsTool (financial news)
+- TXTSearchTool (text file search)
+- CSVSearchTool (CSV file search)
+- CSVSearchToolEnhanced (advanced CSV operations)
+- DOCXSearchTool (Word document search)
+- EXASearchTool (EXA file search)
+- JSONSearchTool (JSON file search)
+- MDXSearchTool (MDX file search)
+- PDFSearchTool (PDF file search)
 
-[Available Tools - Select ONLY from this list]
-ScrapeWebsiteTool
-SerperDevTool
-WebsiteSearchTool
-ScrapeWebsiteToolEnhanced
-SeleniumScrapingTool
-ScrapeElementFromWebsiteTool
-CustomApiTool
-codeInterpreterTool
-CustomCodeInterpreterTool
-FileReadTool
-CustomFileWriteTool
-DirectorySearchTool
-DirectoryReadTool
-YoutubeVideoSearchTool
-YoutubeChannelSearchTool
-GithubSearchTool
-CodeDocsSearchTool
-YahooFinanceNewsTool
-TXTSearchTool
-CSVSearchTool
-CSVSearchToolEnhanced
-DOCXSearchTool
-EXASearchTool
-JSONSearchTool
-MDXSearchTool
-PDFSearchTool
+For each tool you select, specify:
+Tool Name: [name from list above]
+Purpose: [specific purpose in this solution]
+Configuration: [any specific settings needed]
 
-3. Agents:
-[For each agent you listed in crew details, provide:]
-Create agent: [agent name]
-Role: [specific purpose]
-Backstory: [relevant experience]
-Goal: [clear objectives]
-Allow delegation: [yes/no]
-Verbose: [true/false]
-Cache: [enabled/disabled]
-LLM: [model name]
-Temperature: [0.0-1.0]
-Max iteration: [number]
-Select tools: [list ONLY tools from the available tools list above]
+Tasks (create separate entry for each task):
+Task 1:
+- Create task: [specific task name]
+- Description: [detailed description]
+- Expected output: [specific output format]
+- Agent: [responsible agent]
+- Async execution: [yes/no]
+- Context from async tasks: [required async context]
+- Context from sync tasks: [required sync context]
+- Required tools: [list specific tools from above]
 
-4. Tasks:
-[For each task you listed in crew details, provide:]
-Create task: [task name]
-Description: [what this task does]
-Expected output: [what this task produces]
-Agent: [which agent handles this]
-Async execution: [yes/no]
-Context from async tasks: [what it needs from async tasks]
-Context from sync tasks: [what it needs from sync tasks]
+Task 2:
+[Same format as Task 1]
 
-CRITICAL RULES:
-1. Follow this EXACT order: Crew details -> Tools -> Agents -> Tasks
-2. In Crew details: Only list agents and tasks you will fully detail later
-3. In Tools: ONLY select from the provided tools list above - use CustomApiTool or CustomCodeInterpreterTool for custom needs
-4. In Agents: Provide complete details for EVERY agent listed in crew details
-5. In Tasks: Provide complete details for EVERY task listed in crew details
-6. Make everything connect logically:
-   - Each agent should have tools they need for their tasks (ONLY from available tools list)
-   - Each task should have an agent capable of handling it
-   - Tools should match what agents need for their tasks
-7. NO placeholders - every field must have meaningful content
-8. NO extra fields - follow format exactly
-9. NO external tools - use ONLY tools from the available list
-10. For custom functionality: Use CustomApiTool or CustomCodeInterpreterTool
+Task 3:
+[Same format as Task 1]
 
-Return your answer in proper JSON format ONLY for this final output.""",
-            expected_output="JSON Solution",
+[Continue for all required tasks...]
+
+For each Agent:
+Agent 1:
+- Create agent: [agent name]
+- Role: [specific role description]
+- Backstory: [relevant background]
+- Goal: [specific objectives]
+- Allow delegation: [yes/no]
+- Verbose: [true/false]
+- Cache: [enabled/disabled]
+- LLM: [model name]
+- Temperature: [value]
+- Max iteration: [number]
+- Tools: [list specific tools from above]
+
+Agent 2:
+[Same format as Agent 1]
+
+Agent 3:
+[Same format as Agent 1]
+
+[Continue for all required agents...]
+
+CRITICAL:
+1. Follow this format EXACTLY
+2. Only use tools from the provided list
+3. Each task must be listed separately with complete details
+4. Each agent must be listed separately with complete details
+5. All components must work together coherently
+6. DO NOT add any fields not shown in this format
+7. DO NOT remove any fields shown in this format
+8. Each task must specify which tools it needs from the available list
+9. Each agent must specify which tools it needs from the available list""",
+            expected_output="Solution Following Exact Format",
             agent=ceo_agent
         )
     ]
@@ -338,13 +296,9 @@ def delegate_work(task, context, coworker):
         str: The result of the delegation
     """
     try:
-        # Ensure task and context are strings
-        task_str = task if isinstance(task, str) else task.get('description', '')
-        context_str = context if isinstance(context, str) else str(context)
-        
         return {
-            "task": task_str,
-            "context": context_str, 
+            "task": task,
+            "context": context, 
             "coworker": coworker
         }
     except Exception as e:
