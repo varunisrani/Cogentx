@@ -1,0 +1,214 @@
+{
+    "Crew creation details": {
+      "Name": "LinkedInPostGenerator",
+      "Process": "sequence",
+      "Agents": [
+        "InputAnalysisAgent",
+        "NLPAgent",
+        "SentimentAnalysisAgent",
+        "HashtagGeneratorAgent",
+        "ContentAnalysisAgent",
+        "DraftReviewAgent",
+        "FinalOutputAgent",
+        "PerformanceMonitoringAgent"
+      ],
+      "Tasks": [
+        "AnalyzeInput",
+        "GeneratePost",
+        "AnalyzeSentiment",
+        "GenerateHashtags",
+        "AnalyzeContent",
+        "ReviewDraft",
+        "GenerateFinalOutput",
+        "MonitorPerformance"
+      ],
+      "Manager LLM": "GPT-4",
+      "Manager Agent": "AIManager",
+      "Verbose": false,
+      "Memory": "enabled",
+      "Cache": "enabled",
+      "Planning": "iterative",
+      "Max req/min": 1000
+    },
+    "Tools": [],
+    "Agents": [
+      {
+        "Create agent": "InputAnalysisAgent",
+        "Role": "Analyze user input for content generation",
+        "Backstory": "Experienced in data collection and user interaction",
+        "Goal": "To gather and prepare data for post generation",
+        "Allow delegation": "yes",
+        "Verbose": false,
+        "Cache": "enabled",
+        "LLM": "GPT-4",
+        "Temperature": 0.5,
+        "Max iteration": 5,
+        "Select tools": ["CustomApiTool"]
+      },
+      {
+        "Create agent": "NLPAgent",
+        "Role": "Generate coherent post drafts",
+        "Backstory": "Specializes in natural language processing",
+        "Goal": "To produce engaging and relevant post drafts",
+        "Allow delegation": "yes",
+        "Verbose": false,
+        "Cache": "enabled",
+        "LLM": "GPT-4",
+        "Temperature": 0.7,
+        "Max iteration": 5,
+        "Select tools": ["CustomCodeInterpreterTool"]
+      },
+      {
+        "Create agent": "SentimentAnalysisAgent",
+        "Role": "Analyze emotional tone of content",
+        "Backstory": "Expert in sentiment analysis",
+        "Goal": "Ensure alignment with user intent",
+        "Allow delegation": "yes",
+        "Verbose": false,
+        "Cache": "enabled",
+        "LLM": "GPT-4",
+        "Temperature": 0.5,
+        "Max iteration": 5,
+        "Select tools": ["CustomApiTool"]
+      },
+      {
+        "Create agent": "HashtagGeneratorAgent",
+        "Role": "Suggest relevant hashtags",
+        "Backstory": "Knowledgeable in social media trends",
+        "Goal": "Enhance post visibility",
+        "Allow delegation": "yes",
+        "Verbose": false,
+        "Cache": "enabled",
+        "LLM": "GPT-4",
+        "Temperature": 0.5,
+        "Max iteration": 5,
+        "Select tools": ["CustomApiTool"]
+      },
+      {
+        "Create agent": "ContentAnalysisAgent",
+        "Role": "Evaluate clarity and engagement of posts",
+        "Backstory": "Skilled in content optimization",
+        "Goal": "Refine the post for publishing",
+        "Allow delegation": "yes",
+        "Verbose": false,
+        "Cache": "enabled",
+        "LLM": "GPT-4",
+        "Temperature": 0.5,
+        "Max iteration": 5,
+        "Select tools": ["CustomCodeInterpreterTool"]
+      },
+      {
+        "Create agent": "DraftReviewAgent",
+        "Role": "Facilitate user review of draft posts",
+        "Backstory": "Experienced in user feedback processes",
+        "Goal": "Iterate on user feedback to improve drafts",
+        "Allow delegation": "yes",
+        "Verbose": false,
+        "Cache": "enabled",
+        "LLM": "GPT-4",
+        "Temperature": 0.5,
+        "Max iteration": 5,
+        "Select tools": ["CustomApiTool"]
+      },
+      {
+        "Create agent": "FinalOutputAgent",
+        "Role": "Compile final post for publication",
+        "Backstory": "Expert in content management",
+        "Goal": "Ensure readiness of posts for LinkedIn",
+        "Allow delegation": "yes",
+        "Verbose": false,
+        "Cache": "enabled",
+        "LLM": "GPT-4",
+        "Temperature": 0.5,
+        "Max iteration": 5,
+        "Select tools": ["CustomApiTool"]
+      },
+      {
+        "Create agent": "PerformanceMonitoringAgent",
+        "Role": "Track engagement metrics",
+        "Backstory": "Analytical background in social media",
+        "Goal": "Optimize future content strategies",
+        "Allow delegation": "yes",
+        "Verbose": false,
+        "Cache": "enabled",
+        "LLM": "GPT-4",
+        "Temperature": 0.5,
+        "Max iteration": 5,
+        "Select tools": ["CustomApiTool"]
+      }
+    ],
+    "Tasks": [
+      {
+        "Create task": "AnalyzeInput",
+        "Description": "Collect and analyze user-provided data",
+        "Expected output": "Processed user input for further use",
+        "Agent": "InputAnalysisAgent",
+        "Async execution": "no",
+        "Context from async tasks": "none",
+        "Context from sync tasks": "none"
+      },
+      {
+        "Create task": "GeneratePost",
+        "Description": "Generate coherent post drafts",
+        "Expected output": "Draft post ready for review",
+        "Agent": "NLPAgent",
+        "Async execution": "no",
+        "Context from async tasks": "Processed user input",
+        "Context from sync tasks": "none"
+      },
+      {
+        "Create task": "AnalyzeSentiment",
+        "Description": "Assess the emotional tone of the content",
+        "Expected output": "Sentiment analysis report",
+        "Agent": "SentimentAnalysisAgent",
+        "Async execution": "no",
+        "Context from async tasks": "Draft post",
+        "Context from sync tasks": "none"
+      },
+      {
+        "Create task": "GenerateHashtags",
+        "Description": "Suggest relevant hashtags for the post",
+        "Expected output": "List of hashtags",
+        "Agent": "HashtagGeneratorAgent",
+        "Async execution": "no",
+        "Context from async tasks": "Draft post",
+        "Context from sync tasks": "none"
+      },
+      {
+        "Create task": "AnalyzeContent",
+        "Description": "Evaluate the generated post for clarity and engagement",
+        "Expected output": "Content analysis report",
+        "Agent": "ContentAnalysisAgent",
+        "Async execution": "no",
+        "Context from async tasks": "Draft post, Hashtags",
+        "Context from sync tasks": "none"
+      },
+      {
+        "Create task": "ReviewDraft",
+        "Description": "Facilitate user review of draft posts",
+        "Expected output": "User feedback on draft",
+        "Agent": "DraftReviewAgent",
+        "Async execution": "yes",
+        "Context from async tasks": "Content analysis report",
+        "Context from sync tasks": "Draft post"
+      },
+      {
+        "Create task": "GenerateFinalOutput",
+        "Description": "Compile the approved draft and hashtags into a final post",
+        "Expected output": "Final post ready for publication",
+        "Agent": "FinalOutputAgent",
+        "Async execution": "no",
+        "Context from async tasks": "User feedback",
+        "Context from sync tasks": "Draft post"
+      },
+      {
+        "Create task": "MonitorPerformance",
+        "Description": "Track post engagement metrics",
+        "Expected output": "Performance report",
+        "Agent": "PerformanceMonitoringAgent",
+        "Async execution": "yes",
+        "Context from async tasks": "Final post",
+        "Context from sync tasks": "none"
+      }
+    ]
+  }

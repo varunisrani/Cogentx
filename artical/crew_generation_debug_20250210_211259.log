@@ -1,0 +1,1197 @@
+2025-02-10 21:12:59,739 - root - [INFO] - ai_crew_generator.py:setup_logging:53 - Logging to files:
+2025-02-10 21:12:59,740 - root - [INFO] - ai_crew_generator.py:setup_logging:54 -   Debug log: artical/crew_generation_debug_20250210_211259.log
+2025-02-10 21:12:59,740 - root - [INFO] - ai_crew_generator.py:setup_logging:55 -   Info log: artical/crew_generation_20250210_211259.log
+2025-02-10 21:12:59,740 - main - [INFO] - ai_crew_generator.py:main:837 - ==================================================
+2025-02-10 21:12:59,741 - main - [INFO] - ai_crew_generator.py:main:838 - Starting CrewAI App Generation Process
+2025-02-10 21:12:59,741 - main - [INFO] - ai_crew_generator.py:main:839 - ==================================================
+2025-02-10 21:12:59,741 - main - [INFO] - ai_crew_generator.py:main:840 - Output Directory: artical
+2025-02-10 21:12:59,741 - main - [INFO] - ai_crew_generator.py:main:841 - JSON Configuration Path: /Users/varunisrani/Desktop/CrewAI-Studio/blog.json
+2025-02-10 21:12:59,741 - main - [INFO] - ai_crew_generator.py:main:871 - Loading JSON configuration...
+2025-02-10 21:12:59,743 - main - [ERROR] - ai_crew_generator.py:main:907 - JSON decode error: Expecting value: line 28 column 17 (char 800)
+2025-02-10 21:12:59,743 - main - [DEBUG] - ai_crew_generator.py:main:908 - JSON decode error details:
+Traceback (most recent call last):
+  File "/Users/varunisrani/Desktop/CrewAI-Studio/ai_crew_generator.py", line 873, in main
+    json_data = json.load(f)
+                ^^^^^^^^^^^^
+  File "/Users/varunisrani/.pyenv/versions/3.11.11/lib/python3.11/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/Users/varunisrani/.pyenv/versions/3.11.11/lib/python3.11/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/varunisrani/.pyenv/versions/3.11.11/lib/python3.11/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/varunisrani/.pyenv/versions/3.11.11/lib/python3.11/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 28 column 17 (char 800)
+2025-02-10 21:13:53,721 - root - [INFO] - ai_crew_generator.py:setup_logging:53 - Logging to files:
+2025-02-10 21:13:53,722 - root - [INFO] - ai_crew_generator.py:setup_logging:54 -   Debug log: artical/crew_generation_debug_20250210_211353.log
+2025-02-10 21:13:53,722 - root - [INFO] - ai_crew_generator.py:setup_logging:55 -   Info log: artical/crew_generation_20250210_211353.log
+2025-02-10 21:13:53,722 - main - [INFO] - ai_crew_generator.py:main:837 - ==================================================
+2025-02-10 21:13:53,722 - main - [INFO] - ai_crew_generator.py:main:838 - Starting CrewAI App Generation Process
+2025-02-10 21:13:53,723 - main - [INFO] - ai_crew_generator.py:main:839 - ==================================================
+2025-02-10 21:13:53,723 - main - [INFO] - ai_crew_generator.py:main:840 - Output Directory: artical
+2025-02-10 21:13:53,723 - main - [INFO] - ai_crew_generator.py:main:841 - JSON Configuration Path: /Users/varunisrani/Desktop/CrewAI-Studio/blog.json
+2025-02-10 21:13:53,723 - main - [INFO] - ai_crew_generator.py:main:871 - Loading JSON configuration...
+2025-02-10 21:13:53,726 - main - [DEBUG] - ai_crew_generator.py:main:874 - Loaded JSON content: {
+  "Crew creation details": {
+    "Name": "article_writer_agent",
+    "Process": "sequence",
+    "Agents": [
+      "Natural Language Generation Agent",
+      "Content Structuring Agent",
+      "Topic Research Agent",
+      "Customization Options Agent",
+      "Editing and Proofreading Agent",
+      "Feedback Loop Agent",
+      "Export and Formatting Options Agent",
+      "Version Control Agent"
+    ],
+    "Tasks": [
+      "Generate Text",
+      "Structure Content",
+      "Research Topic",
+      "Customize Options",
+      "Edit and Proofread",
+      "Collect Feedback",
+      "Export Article",
+      "Manage Versions"
+    ],
+    "Manager LLM": "OpenAI GPT-4",
+    "Manager Agent": "Implementation Agent",
+    "Verbose": true,
+    "Memory": true,
+    "Cache": true,
+    "Planning": "microservices",
+    "Max req/min": 1000
+  },
+  "Tools": {
+    "Natural Language Generation Agent": "CustomApiTool (OpenAI GPT-3 or GPT-4 API)",
+    "Content Structuring Agent": "CustomCodeInterpreterTool (Python's NLTK)",
+    "Topic Research Agent": "CustomApiTool (Google Search API)",
+    "Customization Options Agent": "CustomCodeInterpreterTool (React)",
+    "Editing and Proofreading Agent": "CustomApiTool (Grammarly API)",
+    "Feedback Loop Agent": "CustomApiTool (Google Forms)",
+    "Export and Formatting Options Agent": "CustomCodeInterpreterTool (Pandoc)",
+    "Version Control Agent": "CustomCodeInterpreterTool (Git)"
+  },
+  "Agents": [
+    {
+      "Create agent": "Natural Language Generation Agent",
+      "Role": "Generate coherent text based on prompts",
+      "Backstory": "Trained on diverse datasets, specializing in text generation.",
+      "Goal": "Produce high-quality drafts for articles.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "OpenAI GPT-4",
+      "Temperature": 0.7,
+      "Max iteration": 3,
+      "Select tools": [
+        "CustomApiTool"
+      ]
+    },
+    {
+      "Create agent": "Content Structuring Agent",
+      "Role": "Organize content logically into sections",
+      "Backstory": "Utilizes linguistic algorithms for content mapping.",
+      "Goal": "Create a structured outline for articles.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "Python NLTK",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": [
+        "CustomCodeInterpreterTool"
+      ]
+    },
+    {
+      "Create agent": "Topic Research Agent",
+      "Role": "Gather relevant data and references",
+      "Backstory": "Experienced in data scraping and keyword analysis.",
+      "Goal": "Inform articles with accurate and up-to-date information.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "Google Search API",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": [
+        "CustomApiTool"
+      ]
+    },
+    {
+      "Create agent": "Customization Options Agent",
+      "Role": "Provide customization for article tone and style",
+      "Backstory": "Proficient in user interface design and user experience.",
+      "Goal": "Allow users to personalize their articles.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "React",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": [
+        "CustomCodeInterpreterTool"
+      ]
+    },
+    {
+      "Create agent": "Editing and Proofreading Agent",
+      "Role": "Ensure articles are grammatically correct",
+      "Backstory": "Utilizes advanced grammar-checking algorithms.",
+      "Goal": "Deliver polished and professional articles.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "Grammarly API",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": [
+        "CustomApiTool"
+      ]
+    },
+    {
+      "Create agent": "Feedback Loop Agent",
+      "Role": "Collect user feedback for improvement",
+      "Backstory": "Aims for continuous enhancement based on user input.",
+      "Goal": "Iteratively improve the article generation process.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "Google Forms",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": [
+        "CustomApiTool"
+      ]
+    },
+    {
+      "Create agent": "Export and Formatting Options Agent",
+      "Role": "Export articles in various formats",
+      "Backstory": "Expert in document conversion and formatting.",
+      "Goal": "Provide multiple output formats for user articles.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "Pandoc",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": [
+        "CustomCodeInterpreterTool"
+      ]
+    },
+    {
+      "Create agent": "Version Control Agent",
+      "Role": "Manage changes and versions of articles",
+      "Backstory": "Utilizes Git for tracking changes and collaboration.",
+      "Goal": "Allow users to revert and compare article versions.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "Git",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": [
+        "CustomCodeInterpreterTool"
+      ]
+    }
+  ],
+  "Tasks": [
+    {
+      "Create task": "Generate Text",
+      "Description": "Generate an initial draft based on user input.",
+      "Expected output": "Draft text for the article.",
+      "Agent": "Natural Language Generation Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "User input and article requirements.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Structure Content",
+      "Description": "Organize the draft into a logical structure.",
+      "Expected output": "Structured outline of the article.",
+      "Agent": "Content Structuring Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "Draft text generated.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Research Topic",
+      "Description": "Gather relevant information and statistics.",
+      "Expected output": "Research data and references.",
+      "Agent": "Topic Research Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "Topic of the article.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Customize Options",
+      "Description": "Allow users to customize the article tone and style.",
+      "Expected output": "User preferences for the article.",
+      "Agent": "Customization Options Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "User customization requests.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Edit and Proofread",
+      "Description": "Review the article for grammar and style.",
+      "Expected output": "Edited and proofread article.",
+      "Agent": "Editing and Proofreading Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "Draft text.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Collect Feedback",
+      "Description": "Gather user feedback on the article.",
+      "Expected output": "Feedback data.",
+      "Agent": "Feedback Loop Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "Completed article.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Export Article",
+      "Description": "Convert the article into required formats.",
+      "Expected output": "Formatted article in various formats.",
+      "Agent": "Export and Formatting Options Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "Finalized article.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Manage Versions",
+      "Description": "Track and manage versions of the article.",
+      "Expected output": "Version history.",
+      "Agent": "Version Control Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "Changes made to the article.",
+      "Context from sync tasks": ""
+    }
+  ]
+}
+2025-02-10 21:13:53,727 - main - [INFO] - ai_crew_generator.py:main:877 - Creating AICrewGenerator instance...
+2025-02-10 21:13:53,727 - AICrewGenerator - [INFO] - ai_crew_generator.py:__init__:63 - ==================================================
+2025-02-10 21:13:53,727 - AICrewGenerator - [INFO] - ai_crew_generator.py:__init__:64 - Initializing AICrewGenerator
+2025-02-10 21:13:53,727 - AICrewGenerator - [INFO] - ai_crew_generator.py:__init__:65 - ==================================================
+2025-02-10 21:13:53,727 - AICrewGenerator - [DEBUG] - ai_crew_generator.py:__init__:67 - Setting up OpenAI LLM with model: gpt-4o-mini
+2025-02-10 21:13:53,732 - httpx - [DEBUG] - _config.py:load_ssl_context:82 - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-02-10 21:13:53,734 - httpx - [DEBUG] - _config.py:load_ssl_context_verify:148 - load_verify_locations cafile='/Users/varunisrani/Desktop/CrewAI-Studio/venv/lib/python3.11/site-packages/certifi/cacert.pem'
+2025-02-10 21:13:53,746 - httpx - [DEBUG] - _config.py:load_ssl_context:82 - load_ssl_context verify=True cert=None trust_env=True http2=False
+2025-02-10 21:13:53,746 - httpx - [DEBUG] - _config.py:load_ssl_context_verify:148 - load_verify_locations cafile='/Users/varunisrani/Desktop/CrewAI-Studio/venv/lib/python3.11/site-packages/certifi/cacert.pem'
+2025-02-10 21:13:53,754 - AICrewGenerator - [INFO] - ai_crew_generator.py:__init__:72 - Successfully initialized OpenAI LLM
+2025-02-10 21:13:53,754 - main - [INFO] - ai_crew_generator.py:main:881 - Normalizing JSON format...
+2025-02-10 21:13:53,754 - main - [DEBUG] - ai_crew_generator.py:main:882 - Starting JSON normalization process
+2025-02-10 21:13:53,754 - AICrewGenerator - [INFO] - ai_crew_generator.py:normalize_json_input:628 - Normalizing JSON input format
+2025-02-10 21:13:53,754 - AICrewGenerator - [DEBUG] - ai_crew_generator.py:normalize_json_input:699 - Sending normalization prompt to OpenAI
+2025-02-10 21:13:53,765 - openai._base_client - [DEBUG] - _base_client.py:_build_request:453 - Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'json_data': {'messages': [{'content': '\n        Transform this JSON configuration into the standard CrewAI format.\n        Input JSON:\n        {\n  "Crew creation details": {\n    "Name": "article_writer_agent",\n    "Process": "sequence",\n    "Agents": [\n      "Natural Language Generation Agent",\n      "Content Structuring Agent",\n      "Topic Research Agent",\n      "Customization Options Agent",\n      "Editing and Proofreading Agent",\n      "Feedback Loop Agent",\n      "Export and Formatting Options Agent",\n      "Version Control Agent"\n    ],\n    "Tasks": [\n      "Generate Text",\n      "Structure Content",\n      "Research Topic",\n      "Customize Options",\n      "Edit and Proofread",\n      "Collect Feedback",\n      "Export Article",\n      "Manage Versions"\n    ],\n    "Manager LLM": "OpenAI GPT-4",\n    "Manager Agent": "Implementation Agent",\n    "Verbose": true,\n    "Memory": true,\n    "Cache": true,\n    "Planning": "microservices",\n    "Max req/min": 1000\n  },\n  "Tools": {\n    "Natural Language Generation Agent": "CustomApiTool (OpenAI GPT-3 or GPT-4 API)",\n    "Content Structuring Agent": "CustomCodeInterpreterTool (Python\'s NLTK)",\n    "Topic Research Agent": "CustomApiTool (Google Search API)",\n    "Customization Options Agent": "CustomCodeInterpreterTool (React)",\n    "Editing and Proofreading Agent": "CustomApiTool (Grammarly API)",\n    "Feedback Loop Agent": "CustomApiTool (Google Forms)",\n    "Export and Formatting Options Agent": "CustomCodeInterpreterTool (Pandoc)",\n    "Version Control Agent": "CustomCodeInterpreterTool (Git)"\n  },\n  "Agents": [\n    {\n      "Create agent": "Natural Language Generation Agent",\n      "Role": "Generate coherent text based on prompts",\n      "Backstory": "Trained on diverse datasets, specializing in text generation.",\n      "Goal": "Produce high-quality drafts for articles.",\n      "Allow delegation": "yes",\n      "Verbose": true,\n      "Cache": true,\n      "LLM": "OpenAI GPT-4",\n      "Temperature": 0.7,\n      "Max iteration": 3,\n      "Select tools": [\n        "CustomApiTool"\n      ]\n    },\n    {\n      "Create agent": "Content Structuring Agent",\n      "Role": "Organize content logically into sections",\n      "Backstory": "Utilizes linguistic algorithms for content mapping.",\n      "Goal": "Create a structured outline for articles.",\n      "Allow delegation": "yes",\n      "Verbose": true,\n      "Cache": true,\n      "LLM": "Python NLTK",\n      "Temperature": 0.5,\n      "Max iteration": 3,\n      "Select tools": [\n        "CustomCodeInterpreterTool"\n      ]\n    },\n    {\n      "Create agent": "Topic Research Agent",\n      "Role": "Gather relevant data and references",\n      "Backstory": "Experienced in data scraping and keyword analysis.",\n      "Goal": "Inform articles with accurate and up-to-date information.",\n      "Allow delegation": "yes",\n      "Verbose": true,\n      "Cache": true,\n      "LLM": "Google Search API",\n      "Temperature": 0.5,\n      "Max iteration": 3,\n      "Select tools": [\n        "CustomApiTool"\n      ]\n    },\n    {\n      "Create agent": "Customization Options Agent",\n      "Role": "Provide customization for article tone and style",\n      "Backstory": "Proficient in user interface design and user experience.",\n      "Goal": "Allow users to personalize their articles.",\n      "Allow delegation": "yes",\n      "Verbose": true,\n      "Cache": true,\n      "LLM": "React",\n      "Temperature": 0.5,\n      "Max iteration": 3,\n      "Select tools": [\n        "CustomCodeInterpreterTool"\n      ]\n    },\n    {\n      "Create agent": "Editing and Proofreading Agent",\n      "Role": "Ensure articles are grammatically correct",\n      "Backstory": "Utilizes advanced grammar-checking algorithms.",\n      "Goal": "Deliver polished and professional articles.",\n      "Allow delegation": "yes",\n      "Verbose": true,\n      "Cache": true,\n      "LLM": "Grammarly API",\n      "Temperature": 0.5,\n      "Max iteration": 3,\n      "Select tools": [\n        "CustomApiTool"\n      ]\n    },\n    {\n      "Create agent": "Feedback Loop Agent",\n      "Role": "Collect user feedback for improvement",\n      "Backstory": "Aims for continuous enhancement based on user input.",\n      "Goal": "Iteratively improve the article generation process.",\n      "Allow delegation": "yes",\n      "Verbose": true,\n      "Cache": true,\n      "LLM": "Google Forms",\n      "Temperature": 0.5,\n      "Max iteration": 3,\n      "Select tools": [\n        "CustomApiTool"\n      ]\n    },\n    {\n      "Create agent": "Export and Formatting Options Agent",\n      "Role": "Export articles in various formats",\n      "Backstory": "Expert in document conversion and formatting.",\n      "Goal": "Provide multiple output formats for user articles.",\n      "Allow delegation": "yes",\n      "Verbose": true,\n      "Cache": true,\n      "LLM": "Pandoc",\n      "Temperature": 0.5,\n      "Max iteration": 3,\n      "Select tools": [\n        "CustomCodeInterpreterTool"\n      ]\n    },\n    {\n      "Create agent": "Version Control Agent",\n      "Role": "Manage changes and versions of articles",\n      "Backstory": "Utilizes Git for tracking changes and collaboration.",\n      "Goal": "Allow users to revert and compare article versions.",\n      "Allow delegation": "yes",\n      "Verbose": true,\n      "Cache": true,\n      "LLM": "Git",\n      "Temperature": 0.5,\n      "Max iteration": 3,\n      "Select tools": [\n        "CustomCodeInterpreterTool"\n      ]\n    }\n  ],\n  "Tasks": [\n    {\n      "Create task": "Generate Text",\n      "Description": "Generate an initial draft based on user input.",\n      "Expected output": "Draft text for the article.",\n      "Agent": "Natural Language Generation Agent",\n      "Async execution": "yes",\n      "Context from async tasks": "User input and article requirements.",\n      "Context from sync tasks": ""\n    },\n    {\n      "Create task": "Structure Content",\n      "Description": "Organize the draft into a logical structure.",\n      "Expected output": "Structured outline of the article.",\n      "Agent": "Content Structuring Agent",\n      "Async execution": "yes",\n      "Context from async tasks": "Draft text generated.",\n      "Context from sync tasks": ""\n    },\n    {\n      "Create task": "Research Topic",\n      "Description": "Gather relevant information and statistics.",\n      "Expected output": "Research data and references.",\n      "Agent": "Topic Research Agent",\n      "Async execution": "yes",\n      "Context from async tasks": "Topic of the article.",\n      "Context from sync tasks": ""\n    },\n    {\n      "Create task": "Customize Options",\n      "Description": "Allow users to customize the article tone and style.",\n      "Expected output": "User preferences for the article.",\n      "Agent": "Customization Options Agent",\n      "Async execution": "yes",\n      "Context from async tasks": "User customization requests.",\n      "Context from sync tasks": ""\n    },\n    {\n      "Create task": "Edit and Proofread",\n      "Description": "Review the article for grammar and style.",\n      "Expected output": "Edited and proofread article.",\n      "Agent": "Editing and Proofreading Agent",\n      "Async execution": "yes",\n      "Context from async tasks": "Draft text.",\n      "Context from sync tasks": ""\n    },\n    {\n      "Create task": "Collect Feedback",\n      "Description": "Gather user feedback on the article.",\n      "Expected output": "Feedback data.",\n      "Agent": "Feedback Loop Agent",\n      "Async execution": "yes",\n      "Context from async tasks": "Completed article.",\n      "Context from sync tasks": ""\n    },\n    {\n      "Create task": "Export Article",\n      "Description": "Convert the article into required formats.",\n      "Expected output": "Formatted article in various formats.",\n      "Agent": "Export and Formatting Options Agent",\n      "Async execution": "yes",\n      "Context from async tasks": "Finalized article.",\n      "Context from sync tasks": ""\n    },\n    {\n      "Create task": "Manage Versions",\n      "Description": "Track and manage versions of the article.",\n      "Expected output": "Version history.",\n      "Agent": "Version Control Agent",\n      "Async execution": "yes",\n      "Context from async tasks": "Changes made to the article.",\n      "Context from sync tasks": ""\n    }\n  ]\n}\n        \n        Convert it to match this exact structure:\n        {\n            "CrewCreationDetails": {\n                "Name": "string",\n                "Process": "sequence/horizontal",\n                "Agents": ["list of agent names"],\n                "Tasks": ["list of task names"],\n                "ManagerLLM": "model name",\n                "ManagerAgent": "agent name",\n                "Verbose": boolean,\n                "Memory": "enabled/disabled",\n                "Cache": "enabled/disabled",\n                "Planning": "string",\n                "MaxReqMin": number\n            },\n            "Tools": [\n                {\n                    "tool_id": "string",\n                    "name": "string",\n                    "type": "string",\n                    "description": "string",\n                    "availability": boolean\n                }\n            ],\n            "Agents": [\n                {\n                    "CreateAgent": "string",\n                    "Role": "string",\n                    "Backstory": "string",\n                    "Goal": "string",\n                    "AllowDelegation": "yes/no",\n                    "Verbose": boolean,\n                    "Cache": "enabled/disabled",\n                    "LLM": "model name",\n                    "Temperature": number,\n                    "MaxIteration": number,\n                    "SelectTools": ["list of tool names"]\n                }\n            ],\n            "Tasks": [\n                {\n                    "CreateTask": "string",\n                    "Description": "string",\n                    "ExpectedOutput": "string",\n                    "Agent": "string",\n                    "AsyncExecution": boolean,\n                    "ContextFromAsyncTasks": "string",\n                    "ContextFromSyncTasks": "string"\n                }\n            ]\n        }\n        \n        Rules:\n        1. Map similar fields to their standard names (e.g., "Crew creation details" -> "CrewCreationDetails")\n        2. Convert values to appropriate types (boolean, number, string)\n        3. Ensure all required fields are present\n        4. Keep the original data and intent while normalizing the format\n        5. If a field doesn\'t exist in input, use reasonable defaults\n        \n        Return ONLY the normalized JSON without any additional text or explanation.\n        The response should be a valid JSON object that can be parsed directly.\n        ', 'role': 'user'}], 'model': 'gpt-4o-mini', 'n': 1, 'stream': False, 'temperature': 0.7}}
+2025-02-10 21:13:53,767 - openai._base_client - [DEBUG] - _base_client.py:_request:993 - Sending HTTP Request: POST https://api.openai.com/v1/chat/completions
+2025-02-10 21:13:53,767 - httpcore.connection - [DEBUG] - _trace.py:trace:47 - connect_tcp.started host='api.openai.com' port=443 local_address=None timeout=None socket_options=None
+2025-02-10 21:13:53,806 - httpcore.connection - [DEBUG] - _trace.py:trace:47 - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1772c2210>
+2025-02-10 21:13:53,807 - httpcore.connection - [DEBUG] - _trace.py:trace:47 - start_tls.started ssl_context=<ssl.SSLContext object at 0x17b68dc70> server_hostname='api.openai.com' timeout=None
+2025-02-10 21:13:53,819 - httpcore.connection - [DEBUG] - _trace.py:trace:47 - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x17b6cbc50>
+2025-02-10 21:13:53,819 - httpcore.http11 - [DEBUG] - _trace.py:trace:47 - send_request_headers.started request=<Request [b'POST']>
+2025-02-10 21:13:53,819 - httpcore.http11 - [DEBUG] - _trace.py:trace:47 - send_request_headers.complete
+2025-02-10 21:13:53,819 - httpcore.http11 - [DEBUG] - _trace.py:trace:47 - send_request_body.started request=<Request [b'POST']>
+2025-02-10 21:13:53,819 - httpcore.http11 - [DEBUG] - _trace.py:trace:47 - send_request_body.complete
+2025-02-10 21:13:53,819 - httpcore.http11 - [DEBUG] - _trace.py:trace:47 - receive_response_headers.started request=<Request [b'POST']>
+2025-02-10 21:14:30,784 - httpcore.http11 - [DEBUG] - _trace.py:trace:47 - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Mon, 10 Feb 2025 15:44:30 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'access-control-expose-headers', b'X-Request-ID'), (b'openai-organization', b'user-pfwpx0yphplkvkhph5n6lgvi'), (b'openai-processing-ms', b'36119'), (b'openai-version', b'2020-10-01'), (b'x-ratelimit-limit-requests', b'5000'), (b'x-ratelimit-limit-tokens', b'4000000'), (b'x-ratelimit-remaining-requests', b'4999'), (b'x-ratelimit-remaining-tokens', b'3997318'), (b'x-ratelimit-reset-requests', b'12ms'), (b'x-ratelimit-reset-tokens', b'40ms'), (b'x-request-id', b'req_18981e046dd0c73db462c4edf7c94732'), (b'strict-transport-security', b'max-age=31536000; includeSubDomains; preload'), (b'cf-cache-status', b'DYNAMIC'), (b'Set-Cookie', b'__cf_bm=6dAOf2VnwuFEuHdlaK_YJhxiQbMDzlGVtZ4k49Z6cBQ-1739202270-1.0.1.1-pCXbZRaYTeIldLY71bHMTKLaJzNTBRlE6iuzjbRNYdCtcrbFSgoGvQcE97q4IMBek2ctwe7uzOtHongB6bt2Ig; path=/; expires=Mon, 10-Feb-25 16:14:30 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), (b'X-Content-Type-Options', b'nosniff'), (b'Set-Cookie', b'_cfuvid=o8JEjmnjMNp4Y584fDGoaI927ouKclY.1OkSeOCNJIk-1739202270789-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), (b'Server', b'cloudflare'), (b'CF-RAY', b'90fd37a979c60333-AMD'), (b'Content-Encoding', b'gzip'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2025-02-10 21:14:30,789 - httpx - [INFO] - _client.py:_send_single_request:1038 - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-02-10 21:14:30,789 - httpcore.http11 - [DEBUG] - _trace.py:trace:47 - receive_response_body.started request=<Request [b'POST']>
+2025-02-10 21:14:31,000 - httpcore.http11 - [DEBUG] - _trace.py:trace:47 - receive_response_body.complete
+2025-02-10 21:14:31,001 - httpcore.http11 - [DEBUG] - _trace.py:trace:47 - response_closed.started
+2025-02-10 21:14:31,001 - httpcore.http11 - [DEBUG] - _trace.py:trace:47 - response_closed.complete
+2025-02-10 21:14:31,002 - openai._base_client - [DEBUG] - _base_client.py:_request:1032 - HTTP Response: POST https://api.openai.com/v1/chat/completions "200 OK" Headers([('date', 'Mon, 10 Feb 2025 15:44:30 GMT'), ('content-type', 'application/json'), ('transfer-encoding', 'chunked'), ('connection', 'keep-alive'), ('access-control-expose-headers', 'X-Request-ID'), ('openai-organization', 'user-pfwpx0yphplkvkhph5n6lgvi'), ('openai-processing-ms', '36119'), ('openai-version', '2020-10-01'), ('x-ratelimit-limit-requests', '5000'), ('x-ratelimit-limit-tokens', '4000000'), ('x-ratelimit-remaining-requests', '4999'), ('x-ratelimit-remaining-tokens', '3997318'), ('x-ratelimit-reset-requests', '12ms'), ('x-ratelimit-reset-tokens', '40ms'), ('x-request-id', 'req_18981e046dd0c73db462c4edf7c94732'), ('strict-transport-security', 'max-age=31536000; includeSubDomains; preload'), ('cf-cache-status', 'DYNAMIC'), ('set-cookie', '__cf_bm=6dAOf2VnwuFEuHdlaK_YJhxiQbMDzlGVtZ4k49Z6cBQ-1739202270-1.0.1.1-pCXbZRaYTeIldLY71bHMTKLaJzNTBRlE6iuzjbRNYdCtcrbFSgoGvQcE97q4IMBek2ctwe7uzOtHongB6bt2Ig; path=/; expires=Mon, 10-Feb-25 16:14:30 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), ('x-content-type-options', 'nosniff'), ('set-cookie', '_cfuvid=o8JEjmnjMNp4Y584fDGoaI927ouKclY.1OkSeOCNJIk-1739202270789-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None'), ('server', 'cloudflare'), ('cf-ray', '90fd37a979c60333-AMD'), ('content-encoding', 'gzip'), ('alt-svc', 'h3=":443"; ma=86400')])
+2025-02-10 21:14:31,003 - openai._base_client - [DEBUG] - _base_client.py:_request:1040 - request_id: req_18981e046dd0c73db462c4edf7c94732
+2025-02-10 21:14:31,029 - AICrewGenerator - [DEBUG] - ai_crew_generator.py:normalize_json_input:703 - Raw OpenAI response: content='```json\n{\n    "CrewCreationDetails": {\n        "Name": "article_writer_agent",\n        "Process": "sequence",\n        "Agents": [\n            "Natural Language Generation Agent",\n            "Content Structuring Agent",\n            "Topic Research Agent",\n            "Customization Options Agent",\n            "Editing and Proofreading Agent",\n            "Feedback Loop Agent",\n            "Export and Formatting Options Agent",\n            "Version Control Agent"\n        ],\n        "Tasks": [\n            "Generate Text",\n            "Structure Content",\n            "Research Topic",\n            "Customize Options",\n            "Edit and Proofread",\n            "Collect Feedback",\n            "Export Article",\n            "Manage Versions"\n        ],\n        "ManagerLLM": "OpenAI GPT-4",\n        "ManagerAgent": "Implementation Agent",\n        "Verbose": true,\n        "Memory": "enabled",\n        "Cache": "enabled",\n        "Planning": "microservices",\n        "MaxReqMin": 1000\n    },\n    "Tools": [\n        {\n            "tool_id": "Natural Language Generation Agent",\n            "name": "CustomApiTool",\n            "type": "OpenAI GPT-3 or GPT-4 API",\n            "description": "CustomApiTool for text generation",\n            "availability": true\n        },\n        {\n            "tool_id": "Content Structuring Agent",\n            "name": "CustomCodeInterpreterTool",\n            "type": "Python\'s NLTK",\n            "description": "Tool for organizing content logically",\n            "availability": true\n        },\n        {\n            "tool_id": "Topic Research Agent",\n            "name": "CustomApiTool",\n            "type": "Google Search API",\n            "description": "Tool for gathering relevant data",\n            "availability": true\n        },\n        {\n            "tool_id": "Customization Options Agent",\n            "name": "CustomCodeInterpreterTool",\n            "type": "React",\n            "description": "Tool for providing customization options",\n            "availability": true\n        },\n        {\n            "tool_id": "Editing and Proofreading Agent",\n            "name": "CustomApiTool",\n            "type": "Grammarly API",\n            "description": "Tool for ensuring grammatical correctness",\n            "availability": true\n        },\n        {\n            "tool_id": "Feedback Loop Agent",\n            "name": "CustomApiTool",\n            "type": "Google Forms",\n            "description": "Tool for collecting user feedback",\n            "availability": true\n        },\n        {\n            "tool_id": "Export and Formatting Options Agent",\n            "name": "CustomCodeInterpreterTool",\n            "type": "Pandoc",\n            "description": "Tool for exporting articles in various formats",\n            "availability": true\n        },\n        {\n            "tool_id": "Version Control Agent",\n            "name": "CustomCodeInterpreterTool",\n            "type": "Git",\n            "description": "Tool for managing changes and versions of articles",\n            "availability": true\n        }\n    ],\n    "Agents": [\n        {\n            "CreateAgent": "Natural Language Generation Agent",\n            "Role": "Generate coherent text based on prompts",\n            "Backstory": "Trained on diverse datasets, specializing in text generation.",\n            "Goal": "Produce high-quality drafts for articles.",\n            "AllowDelegation": "yes",\n            "Verbose": true,\n            "Cache": "enabled",\n            "LLM": "OpenAI GPT-4",\n            "Temperature": 0.7,\n            "MaxIteration": 3,\n            "SelectTools": [\n                "CustomApiTool"\n            ]\n        },\n        {\n            "CreateAgent": "Content Structuring Agent",\n            "Role": "Organize content logically into sections",\n            "Backstory": "Utilizes linguistic algorithms for content mapping.",\n            "Goal": "Create a structured outline for articles.",\n            "AllowDelegation": "yes",\n            "Verbose": true,\n            "Cache": "enabled",\n            "LLM": "Python NLTK",\n            "Temperature": 0.5,\n            "MaxIteration": 3,\n            "SelectTools": [\n                "CustomCodeInterpreterTool"\n            ]\n        },\n        {\n            "CreateAgent": "Topic Research Agent",\n            "Role": "Gather relevant data and references",\n            "Backstory": "Experienced in data scraping and keyword analysis.",\n            "Goal": "Inform articles with accurate and up-to-date information.",\n            "AllowDelegation": "yes",\n            "Verbose": true,\n            "Cache": "enabled",\n            "LLM": "Google Search API",\n            "Temperature": 0.5,\n            "MaxIteration": 3,\n            "SelectTools": [\n                "CustomApiTool"\n            ]\n        },\n        {\n            "CreateAgent": "Customization Options Agent",\n            "Role": "Provide customization for article tone and style",\n            "Backstory": "Proficient in user interface design and user experience.",\n            "Goal": "Allow users to personalize their articles.",\n            "AllowDelegation": "yes",\n            "Verbose": true,\n            "Cache": "enabled",\n            "LLM": "React",\n            "Temperature": 0.5,\n            "MaxIteration": 3,\n            "SelectTools": [\n                "CustomCodeInterpreterTool"\n            ]\n        },\n        {\n            "CreateAgent": "Editing and Proofreading Agent",\n            "Role": "Ensure articles are grammatically correct",\n            "Backstory": "Utilizes advanced grammar-checking algorithms.",\n            "Goal": "Deliver polished and professional articles.",\n            "AllowDelegation": "yes",\n            "Verbose": true,\n            "Cache": "enabled",\n            "LLM": "Grammarly API",\n            "Temperature": 0.5,\n            "MaxIteration": 3,\n            "SelectTools": [\n                "CustomApiTool"\n            ]\n        },\n        {\n            "CreateAgent": "Feedback Loop Agent",\n            "Role": "Collect user feedback for improvement",\n            "Backstory": "Aims for continuous enhancement based on user input.",\n            "Goal": "Iteratively improve the article generation process.",\n            "AllowDelegation": "yes",\n            "Verbose": true,\n            "Cache": "enabled",\n            "LLM": "Google Forms",\n            "Temperature": 0.5,\n            "MaxIteration": 3,\n            "SelectTools": [\n                "CustomApiTool"\n            ]\n        },\n        {\n            "CreateAgent": "Export and Formatting Options Agent",\n            "Role": "Export articles in various formats",\n            "Backstory": "Expert in document conversion and formatting.",\n            "Goal": "Provide multiple output formats for user articles.",\n            "AllowDelegation": "yes",\n            "Verbose": true,\n            "Cache": "enabled",\n            "LLM": "Pandoc",\n            "Temperature": 0.5,\n            "MaxIteration": 3,\n            "SelectTools": [\n                "CustomCodeInterpreterTool"\n            ]\n        },\n        {\n            "CreateAgent": "Version Control Agent",\n            "Role": "Manage changes and versions of articles",\n            "Backstory": "Utilizes Git for tracking changes and collaboration.",\n            "Goal": "Allow users to revert and compare article versions.",\n            "AllowDelegation": "yes",\n            "Verbose": true,\n            "Cache": "enabled",\n            "LLM": "Git",\n            "Temperature": 0.5,\n            "MaxIteration": 3,\n            "SelectTools": [\n                "CustomCodeInterpreterTool"\n            ]\n        }\n    ],\n    "Tasks": [\n        {\n            "CreateTask": "Generate Text",\n            "Description": "Generate an initial draft based on user input.",\n            "ExpectedOutput": "Draft text for the article.",\n            "Agent": "Natural Language Generation Agent",\n            "AsyncExecution": true,\n            "ContextFromAsyncTasks": "User input and article requirements.",\n            "ContextFromSyncTasks": ""\n        },\n        {\n            "CreateTask": "Structure Content",\n            "Description": "Organize the draft into a logical structure.",\n            "ExpectedOutput": "Structured outline of the article.",\n            "Agent": "Content Structuring Agent",\n            "AsyncExecution": true,\n            "ContextFromAsyncTasks": "Draft text generated.",\n            "ContextFromSyncTasks": ""\n        },\n        {\n            "CreateTask": "Research Topic",\n            "Description": "Gather relevant information and statistics.",\n            "ExpectedOutput": "Research data and references.",\n            "Agent": "Topic Research Agent",\n            "AsyncExecution": true,\n            "ContextFromAsyncTasks": "Topic of the article.",\n            "ContextFromSyncTasks": ""\n        },\n        {\n            "CreateTask": "Customize Options",\n            "Description": "Allow users to customize the article tone and style.",\n            "ExpectedOutput": "User preferences for the article.",\n            "Agent": "Customization Options Agent",\n            "AsyncExecution": true,\n            "ContextFromAsyncTasks": "User customization requests.",\n            "ContextFromSyncTasks": ""\n        },\n        {\n            "CreateTask": "Edit and Proofread",\n            "Description": "Review the article for grammar and style.",\n            "ExpectedOutput": "Edited and proofread article.",\n            "Agent": "Editing and Proofreading Agent",\n            "AsyncExecution": true,\n            "ContextFromAsyncTasks": "Draft text.",\n            "ContextFromSyncTasks": ""\n        },\n        {\n            "CreateTask": "Collect Feedback",\n            "Description": "Gather user feedback on the article.",\n            "ExpectedOutput": "Feedback data.",\n            "Agent": "Feedback Loop Agent",\n            "AsyncExecution": true,\n            "ContextFromAsyncTasks": "Completed article.",\n            "ContextFromSyncTasks": ""\n        },\n        {\n            "CreateTask": "Export Article",\n            "Description": "Convert the article into required formats.",\n            "ExpectedOutput": "Formatted article in various formats.",\n            "Agent": "Export and Formatting Options Agent",\n            "AsyncExecution": true,\n            "ContextFromAsyncTasks": "Finalized article.",\n            "ContextFromSyncTasks": ""\n        },\n        {\n            "CreateTask": "Manage Versions",\n            "Description": "Track and manage versions of the article.",\n            "ExpectedOutput": "Version history.",\n            "Agent": "Version Control Agent",\n            "AsyncExecution": true,\n            "ContextFromAsyncTasks": "Changes made to the article.",\n            "ContextFromSyncTasks": ""\n        }\n    ]\n}\n```' additional_kwargs={'refusal': None} response_metadata={'token_usage': {'completion_tokens': 2171, 'prompt_tokens': 2351, 'total_tokens': 4522, 'completion_tokens_details': {'accepted_prediction_tokens': 0, 'audio_tokens': 0, 'reasoning_tokens': 0, 'rejected_prediction_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0}}, 'model_name': 'gpt-4o-mini-2024-07-18', 'system_fingerprint': 'fp_72ed7ab54c', 'finish_reason': 'stop', 'logprobs': None} id='run-e31fe314-cc15-4b26-9817-7b1c959f8d97-0' usage_metadata={'input_tokens': 2351, 'output_tokens': 2171, 'total_tokens': 4522, 'input_token_details': {'audio': 0, 'cache_read': 0}, 'output_token_details': {'audio': 0, 'reasoning': 0}}
+2025-02-10 21:14:31,030 - AICrewGenerator - [DEBUG] - ai_crew_generator.py:normalize_json_input:717 - Attempting to parse JSON content: {
+    "CrewCreationDetails": {
+        "Name": "article_writer_agent",
+        "Process": "sequence",
+        "Agents": [
+            "Natural Language Generation Agent",
+            "Content Structuring Agent",
+            "Topic Research Agent",
+            "Customization Options Agent",
+            "Editing and Proofreading Agent",
+            "Feedback Loop Agent",
+            "Export and Formatting Options Agent",
+            "Version Control Agent"
+        ],
+        "Tasks": [
+            "Generate Text",
+            "Structure Content",
+            "Research Topic",
+            "Customize Options",
+            "Edit and Proofread",
+            "Collect Feedback",
+            "Export Article",
+            "Manage Versions"
+        ],
+        "ManagerLLM": "OpenAI GPT-4",
+        "ManagerAgent": "Implementation Agent",
+        "Verbose": true,
+        "Memory": "enabled",
+        "Cache": "enabled",
+        "Planning": "microservices",
+        "MaxReqMin": 1000
+    },
+    "Tools": [
+        {
+            "tool_id": "Natural Language Generation Agent",
+            "name": "CustomApiTool",
+            "type": "OpenAI GPT-3 or GPT-4 API",
+            "description": "CustomApiTool for text generation",
+            "availability": true
+        },
+        {
+            "tool_id": "Content Structuring Agent",
+            "name": "CustomCodeInterpreterTool",
+            "type": "Python's NLTK",
+            "description": "Tool for organizing content logically",
+            "availability": true
+        },
+        {
+            "tool_id": "Topic Research Agent",
+            "name": "CustomApiTool",
+            "type": "Google Search API",
+            "description": "Tool for gathering relevant data",
+            "availability": true
+        },
+        {
+            "tool_id": "Customization Options Agent",
+            "name": "CustomCodeInterpreterTool",
+            "type": "React",
+            "description": "Tool for providing customization options",
+            "availability": true
+        },
+        {
+            "tool_id": "Editing and Proofreading Agent",
+            "name": "CustomApiTool",
+            "type": "Grammarly API",
+            "description": "Tool for ensuring grammatical correctness",
+            "availability": true
+        },
+        {
+            "tool_id": "Feedback Loop Agent",
+            "name": "CustomApiTool",
+            "type": "Google Forms",
+            "description": "Tool for collecting user feedback",
+            "availability": true
+        },
+        {
+            "tool_id": "Export and Formatting Options Agent",
+            "name": "CustomCodeInterpreterTool",
+            "type": "Pandoc",
+            "description": "Tool for exporting articles in various formats",
+            "availability": true
+        },
+        {
+            "tool_id": "Version Control Agent",
+            "name": "CustomCodeInterpreterTool",
+            "type": "Git",
+            "description": "Tool for managing changes and versions of articles",
+            "availability": true
+        }
+    ],
+    "Agents": [
+        {
+            "CreateAgent": "Natural Language Generation Agent",
+            "Role": "Generate coherent text based on prompts",
+            "Backstory": "Trained on diverse datasets, specializing in text generation.",
+            "Goal": "Produce high-quality drafts for articles.",
+            "AllowDelegation": "yes",
+            "Verbose": true,
+            "Cache": "enabled",
+            "LLM": "OpenAI GPT-4",
+            "Temperature": 0.7,
+            "MaxIteration": 3,
+            "SelectTools": [
+                "CustomApiTool"
+            ]
+        },
+        {
+            "CreateAgent": "Content Structuring Agent",
+            "Role": "Organize content logically into sections",
+            "Backstory": "Utilizes linguistic algorithms for content mapping.",
+            "Goal": "Create a structured outline for articles.",
+            "AllowDelegation": "yes",
+            "Verbose": true,
+            "Cache": "enabled",
+            "LLM": "Python NLTK",
+            "Temperature": 0.5,
+            "MaxIteration": 3,
+            "SelectTools": [
+                "CustomCodeInterpreterTool"
+            ]
+        },
+        {
+            "CreateAgent": "Topic Research Agent",
+            "Role": "Gather relevant data and references",
+            "Backstory": "Experienced in data scraping and keyword analysis.",
+            "Goal": "Inform articles with accurate and up-to-date information.",
+            "AllowDelegation": "yes",
+            "Verbose": true,
+            "Cache": "enabled",
+            "LLM": "Google Search API",
+            "Temperature": 0.5,
+            "MaxIteration": 3,
+            "SelectTools": [
+                "CustomApiTool"
+            ]
+        },
+        {
+            "CreateAgent": "Customization Options Agent",
+            "Role": "Provide customization for article tone and style",
+            "Backstory": "Proficient in user interface design and user experience.",
+            "Goal": "Allow users to personalize their articles.",
+            "AllowDelegation": "yes",
+            "Verbose": true,
+            "Cache": "enabled",
+            "LLM": "React",
+            "Temperature": 0.5,
+            "MaxIteration": 3,
+            "SelectTools": [
+                "CustomCodeInterpreterTool"
+            ]
+        },
+        {
+            "CreateAgent": "Editing and Proofreading Agent",
+            "Role": "Ensure articles are grammatically correct",
+            "Backstory": "Utilizes advanced grammar-checking algorithms.",
+            "Goal": "Deliver polished and professional articles.",
+            "AllowDelegation": "yes",
+            "Verbose": true,
+            "Cache": "enabled",
+            "LLM": "Grammarly API",
+            "Temperature": 0.5,
+            "MaxIteration": 3,
+            "SelectTools": [
+                "CustomApiTool"
+            ]
+        },
+        {
+            "CreateAgent": "Feedback Loop Agent",
+            "Role": "Collect user feedback for improvement",
+            "Backstory": "Aims for continuous enhancement based on user input.",
+            "Goal": "Iteratively improve the article generation process.",
+            "AllowDelegation": "yes",
+            "Verbose": true,
+            "Cache": "enabled",
+            "LLM": "Google Forms",
+            "Temperature": 0.5,
+            "MaxIteration": 3,
+            "SelectTools": [
+                "CustomApiTool"
+            ]
+        },
+        {
+            "CreateAgent": "Export and Formatting Options Agent",
+            "Role": "Export articles in various formats",
+            "Backstory": "Expert in document conversion and formatting.",
+            "Goal": "Provide multiple output formats for user articles.",
+            "AllowDelegation": "yes",
+            "Verbose": true,
+            "Cache": "enabled",
+            "LLM": "Pandoc",
+            "Temperature": 0.5,
+            "MaxIteration": 3,
+            "SelectTools": [
+                "CustomCodeInterpreterTool"
+            ]
+        },
+        {
+            "CreateAgent": "Version Control Agent",
+            "Role": "Manage changes and versions of articles",
+            "Backstory": "Utilizes Git for tracking changes and collaboration.",
+            "Goal": "Allow users to revert and compare article versions.",
+            "AllowDelegation": "yes",
+            "Verbose": true,
+            "Cache": "enabled",
+            "LLM": "Git",
+            "Temperature": 0.5,
+            "MaxIteration": 3,
+            "SelectTools": [
+                "CustomCodeInterpreterTool"
+            ]
+        }
+    ],
+    "Tasks": [
+        {
+            "CreateTask": "Generate Text",
+            "Description": "Generate an initial draft based on user input.",
+            "ExpectedOutput": "Draft text for the article.",
+            "Agent": "Natural Language Generation Agent",
+            "AsyncExecution": true,
+            "ContextFromAsyncTasks": "User input and article requirements.",
+            "ContextFromSyncTasks": ""
+        },
+        {
+            "CreateTask": "Structure Content",
+            "Description": "Organize the draft into a logical structure.",
+            "ExpectedOutput": "Structured outline of the article.",
+            "Agent": "Content Structuring Agent",
+            "AsyncExecution": true,
+            "ContextFromAsyncTasks": "Draft text generated.",
+            "ContextFromSyncTasks": ""
+        },
+        {
+            "CreateTask": "Research Topic",
+            "Description": "Gather relevant information and statistics.",
+            "ExpectedOutput": "Research data and references.",
+            "Agent": "Topic Research Agent",
+            "AsyncExecution": true,
+            "ContextFromAsyncTasks": "Topic of the article.",
+            "ContextFromSyncTasks": ""
+        },
+        {
+            "CreateTask": "Customize Options",
+            "Description": "Allow users to customize the article tone and style.",
+            "ExpectedOutput": "User preferences for the article.",
+            "Agent": "Customization Options Agent",
+            "AsyncExecution": true,
+            "ContextFromAsyncTasks": "User customization requests.",
+            "ContextFromSyncTasks": ""
+        },
+        {
+            "CreateTask": "Edit and Proofread",
+            "Description": "Review the article for grammar and style.",
+            "ExpectedOutput": "Edited and proofread article.",
+            "Agent": "Editing and Proofreading Agent",
+            "AsyncExecution": true,
+            "ContextFromAsyncTasks": "Draft text.",
+            "ContextFromSyncTasks": ""
+        },
+        {
+            "CreateTask": "Collect Feedback",
+            "Description": "Gather user feedback on the article.",
+            "ExpectedOutput": "Feedback data.",
+            "Agent": "Feedback Loop Agent",
+            "AsyncExecution": true,
+            "ContextFromAsyncTasks": "Completed article.",
+            "ContextFromSyncTasks": ""
+        },
+        {
+            "CreateTask": "Export Article",
+            "Description": "Convert the article into required formats.",
+            "ExpectedOutput": "Formatted article in various formats.",
+            "Agent": "Export and Formatting Options Agent",
+            "AsyncExecution": true,
+            "ContextFromAsyncTasks": "Finalized article.",
+            "ContextFromSyncTasks": ""
+        },
+        {
+            "CreateTask": "Manage Versions",
+            "Description": "Track and manage versions of the article.",
+            "ExpectedOutput": "Version history.",
+            "Agent": "Version Control Agent",
+            "AsyncExecution": true,
+            "ContextFromAsyncTasks": "Changes made to the article.",
+            "ContextFromSyncTasks": ""
+        }
+    ]
+}
+2025-02-10 21:14:31,031 - AICrewGenerator - [INFO] - ai_crew_generator.py:normalize_json_input:749 - Successfully normalized JSON format
+2025-02-10 21:14:31,032 - AICrewGenerator - [DEBUG] - ai_crew_generator.py:normalize_json_input:750 - Final normalized data: {
+  "CrewCreationDetails": {
+    "Name": "article_writer_agent",
+    "Process": "sequence",
+    "Agents": [
+      "Natural Language Generation Agent",
+      "Content Structuring Agent",
+      "Topic Research Agent",
+      "Customization Options Agent",
+      "Editing and Proofreading Agent",
+      "Feedback Loop Agent",
+      "Export and Formatting Options Agent",
+      "Version Control Agent"
+    ],
+    "Tasks": [
+      "Generate Text",
+      "Structure Content",
+      "Research Topic",
+      "Customize Options",
+      "Edit and Proofread",
+      "Collect Feedback",
+      "Export Article",
+      "Manage Versions"
+    ],
+    "ManagerLLM": "OpenAI GPT-4",
+    "ManagerAgent": "Implementation Agent",
+    "Verbose": true,
+    "Memory": "enabled",
+    "Cache": "enabled",
+    "Planning": "microservices",
+    "MaxReqMin": 1000
+  },
+  "Tools": [
+    {
+      "tool_id": "Natural Language Generation Agent",
+      "name": "CustomApiTool",
+      "type": "OpenAI GPT-3 or GPT-4 API",
+      "description": "CustomApiTool for text generation",
+      "availability": true
+    },
+    {
+      "tool_id": "Content Structuring Agent",
+      "name": "CustomCodeInterpreterTool",
+      "type": "Python's NLTK",
+      "description": "Tool for organizing content logically",
+      "availability": true
+    },
+    {
+      "tool_id": "Topic Research Agent",
+      "name": "CustomApiTool",
+      "type": "Google Search API",
+      "description": "Tool for gathering relevant data",
+      "availability": true
+    },
+    {
+      "tool_id": "Customization Options Agent",
+      "name": "CustomCodeInterpreterTool",
+      "type": "React",
+      "description": "Tool for providing customization options",
+      "availability": true
+    },
+    {
+      "tool_id": "Editing and Proofreading Agent",
+      "name": "CustomApiTool",
+      "type": "Grammarly API",
+      "description": "Tool for ensuring grammatical correctness",
+      "availability": true
+    },
+    {
+      "tool_id": "Feedback Loop Agent",
+      "name": "CustomApiTool",
+      "type": "Google Forms",
+      "description": "Tool for collecting user feedback",
+      "availability": true
+    },
+    {
+      "tool_id": "Export and Formatting Options Agent",
+      "name": "CustomCodeInterpreterTool",
+      "type": "Pandoc",
+      "description": "Tool for exporting articles in various formats",
+      "availability": true
+    },
+    {
+      "tool_id": "Version Control Agent",
+      "name": "CustomCodeInterpreterTool",
+      "type": "Git",
+      "description": "Tool for managing changes and versions of articles",
+      "availability": true
+    }
+  ],
+  "Agents": [
+    {
+      "CreateAgent": "Natural Language Generation Agent",
+      "Role": "Generate coherent text based on prompts",
+      "Backstory": "Trained on diverse datasets, specializing in text generation.",
+      "Goal": "Produce high-quality drafts for articles.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "OpenAI GPT-4",
+      "Temperature": 0.7,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomApiTool"
+      ]
+    },
+    {
+      "CreateAgent": "Content Structuring Agent",
+      "Role": "Organize content logically into sections",
+      "Backstory": "Utilizes linguistic algorithms for content mapping.",
+      "Goal": "Create a structured outline for articles.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "Python NLTK",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomCodeInterpreterTool"
+      ]
+    },
+    {
+      "CreateAgent": "Topic Research Agent",
+      "Role": "Gather relevant data and references",
+      "Backstory": "Experienced in data scraping and keyword analysis.",
+      "Goal": "Inform articles with accurate and up-to-date information.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "Google Search API",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomApiTool"
+      ]
+    },
+    {
+      "CreateAgent": "Customization Options Agent",
+      "Role": "Provide customization for article tone and style",
+      "Backstory": "Proficient in user interface design and user experience.",
+      "Goal": "Allow users to personalize their articles.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "React",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomCodeInterpreterTool"
+      ]
+    },
+    {
+      "CreateAgent": "Editing and Proofreading Agent",
+      "Role": "Ensure articles are grammatically correct",
+      "Backstory": "Utilizes advanced grammar-checking algorithms.",
+      "Goal": "Deliver polished and professional articles.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "Grammarly API",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomApiTool"
+      ]
+    },
+    {
+      "CreateAgent": "Feedback Loop Agent",
+      "Role": "Collect user feedback for improvement",
+      "Backstory": "Aims for continuous enhancement based on user input.",
+      "Goal": "Iteratively improve the article generation process.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "Google Forms",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomApiTool"
+      ]
+    },
+    {
+      "CreateAgent": "Export and Formatting Options Agent",
+      "Role": "Export articles in various formats",
+      "Backstory": "Expert in document conversion and formatting.",
+      "Goal": "Provide multiple output formats for user articles.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "Pandoc",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomCodeInterpreterTool"
+      ]
+    },
+    {
+      "CreateAgent": "Version Control Agent",
+      "Role": "Manage changes and versions of articles",
+      "Backstory": "Utilizes Git for tracking changes and collaboration.",
+      "Goal": "Allow users to revert and compare article versions.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "Git",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomCodeInterpreterTool"
+      ]
+    }
+  ],
+  "Tasks": [
+    {
+      "CreateTask": "Generate Text",
+      "Description": "Generate an initial draft based on user input.",
+      "ExpectedOutput": "Draft text for the article.",
+      "Agent": "Natural Language Generation Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "User input and article requirements.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Structure Content",
+      "Description": "Organize the draft into a logical structure.",
+      "ExpectedOutput": "Structured outline of the article.",
+      "Agent": "Content Structuring Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "Draft text generated.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Research Topic",
+      "Description": "Gather relevant information and statistics.",
+      "ExpectedOutput": "Research data and references.",
+      "Agent": "Topic Research Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "Topic of the article.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Customize Options",
+      "Description": "Allow users to customize the article tone and style.",
+      "ExpectedOutput": "User preferences for the article.",
+      "Agent": "Customization Options Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "User customization requests.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Edit and Proofread",
+      "Description": "Review the article for grammar and style.",
+      "ExpectedOutput": "Edited and proofread article.",
+      "Agent": "Editing and Proofreading Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "Draft text.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Collect Feedback",
+      "Description": "Gather user feedback on the article.",
+      "ExpectedOutput": "Feedback data.",
+      "Agent": "Feedback Loop Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "Completed article.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Export Article",
+      "Description": "Convert the article into required formats.",
+      "ExpectedOutput": "Formatted article in various formats.",
+      "Agent": "Export and Formatting Options Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "Finalized article.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Manage Versions",
+      "Description": "Track and manage versions of the article.",
+      "ExpectedOutput": "Version history.",
+      "Agent": "Version Control Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "Changes made to the article.",
+      "ContextFromSyncTasks": ""
+    }
+  ]
+}
+2025-02-10 21:14:31,033 - main - [DEBUG] - ai_crew_generator.py:main:884 - Normalized JSON: {
+  "CrewCreationDetails": {
+    "Name": "article_writer_agent",
+    "Process": "sequence",
+    "Agents": [
+      "Natural Language Generation Agent",
+      "Content Structuring Agent",
+      "Topic Research Agent",
+      "Customization Options Agent",
+      "Editing and Proofreading Agent",
+      "Feedback Loop Agent",
+      "Export and Formatting Options Agent",
+      "Version Control Agent"
+    ],
+    "Tasks": [
+      "Generate Text",
+      "Structure Content",
+      "Research Topic",
+      "Customize Options",
+      "Edit and Proofread",
+      "Collect Feedback",
+      "Export Article",
+      "Manage Versions"
+    ],
+    "ManagerLLM": "OpenAI GPT-4",
+    "ManagerAgent": "Implementation Agent",
+    "Verbose": true,
+    "Memory": "enabled",
+    "Cache": "enabled",
+    "Planning": "microservices",
+    "MaxReqMin": 1000
+  },
+  "Tools": [
+    {
+      "tool_id": "Natural Language Generation Agent",
+      "name": "CustomApiTool",
+      "type": "OpenAI GPT-3 or GPT-4 API",
+      "description": "CustomApiTool for text generation",
+      "availability": true
+    },
+    {
+      "tool_id": "Content Structuring Agent",
+      "name": "CustomCodeInterpreterTool",
+      "type": "Python's NLTK",
+      "description": "Tool for organizing content logically",
+      "availability": true
+    },
+    {
+      "tool_id": "Topic Research Agent",
+      "name": "CustomApiTool",
+      "type": "Google Search API",
+      "description": "Tool for gathering relevant data",
+      "availability": true
+    },
+    {
+      "tool_id": "Customization Options Agent",
+      "name": "CustomCodeInterpreterTool",
+      "type": "React",
+      "description": "Tool for providing customization options",
+      "availability": true
+    },
+    {
+      "tool_id": "Editing and Proofreading Agent",
+      "name": "CustomApiTool",
+      "type": "Grammarly API",
+      "description": "Tool for ensuring grammatical correctness",
+      "availability": true
+    },
+    {
+      "tool_id": "Feedback Loop Agent",
+      "name": "CustomApiTool",
+      "type": "Google Forms",
+      "description": "Tool for collecting user feedback",
+      "availability": true
+    },
+    {
+      "tool_id": "Export and Formatting Options Agent",
+      "name": "CustomCodeInterpreterTool",
+      "type": "Pandoc",
+      "description": "Tool for exporting articles in various formats",
+      "availability": true
+    },
+    {
+      "tool_id": "Version Control Agent",
+      "name": "CustomCodeInterpreterTool",
+      "type": "Git",
+      "description": "Tool for managing changes and versions of articles",
+      "availability": true
+    }
+  ],
+  "Agents": [
+    {
+      "CreateAgent": "Natural Language Generation Agent",
+      "Role": "Generate coherent text based on prompts",
+      "Backstory": "Trained on diverse datasets, specializing in text generation.",
+      "Goal": "Produce high-quality drafts for articles.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "OpenAI GPT-4",
+      "Temperature": 0.7,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomApiTool"
+      ]
+    },
+    {
+      "CreateAgent": "Content Structuring Agent",
+      "Role": "Organize content logically into sections",
+      "Backstory": "Utilizes linguistic algorithms for content mapping.",
+      "Goal": "Create a structured outline for articles.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "Python NLTK",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomCodeInterpreterTool"
+      ]
+    },
+    {
+      "CreateAgent": "Topic Research Agent",
+      "Role": "Gather relevant data and references",
+      "Backstory": "Experienced in data scraping and keyword analysis.",
+      "Goal": "Inform articles with accurate and up-to-date information.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "Google Search API",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomApiTool"
+      ]
+    },
+    {
+      "CreateAgent": "Customization Options Agent",
+      "Role": "Provide customization for article tone and style",
+      "Backstory": "Proficient in user interface design and user experience.",
+      "Goal": "Allow users to personalize their articles.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "React",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomCodeInterpreterTool"
+      ]
+    },
+    {
+      "CreateAgent": "Editing and Proofreading Agent",
+      "Role": "Ensure articles are grammatically correct",
+      "Backstory": "Utilizes advanced grammar-checking algorithms.",
+      "Goal": "Deliver polished and professional articles.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "Grammarly API",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomApiTool"
+      ]
+    },
+    {
+      "CreateAgent": "Feedback Loop Agent",
+      "Role": "Collect user feedback for improvement",
+      "Backstory": "Aims for continuous enhancement based on user input.",
+      "Goal": "Iteratively improve the article generation process.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "Google Forms",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomApiTool"
+      ]
+    },
+    {
+      "CreateAgent": "Export and Formatting Options Agent",
+      "Role": "Export articles in various formats",
+      "Backstory": "Expert in document conversion and formatting.",
+      "Goal": "Provide multiple output formats for user articles.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "Pandoc",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomCodeInterpreterTool"
+      ]
+    },
+    {
+      "CreateAgent": "Version Control Agent",
+      "Role": "Manage changes and versions of articles",
+      "Backstory": "Utilizes Git for tracking changes and collaboration.",
+      "Goal": "Allow users to revert and compare article versions.",
+      "AllowDelegation": "yes",
+      "Verbose": true,
+      "Cache": "enabled",
+      "LLM": "Git",
+      "Temperature": 0.5,
+      "MaxIteration": 3,
+      "SelectTools": [
+        "CustomCodeInterpreterTool"
+      ]
+    }
+  ],
+  "Tasks": [
+    {
+      "CreateTask": "Generate Text",
+      "Description": "Generate an initial draft based on user input.",
+      "ExpectedOutput": "Draft text for the article.",
+      "Agent": "Natural Language Generation Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "User input and article requirements.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Structure Content",
+      "Description": "Organize the draft into a logical structure.",
+      "ExpectedOutput": "Structured outline of the article.",
+      "Agent": "Content Structuring Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "Draft text generated.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Research Topic",
+      "Description": "Gather relevant information and statistics.",
+      "ExpectedOutput": "Research data and references.",
+      "Agent": "Topic Research Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "Topic of the article.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Customize Options",
+      "Description": "Allow users to customize the article tone and style.",
+      "ExpectedOutput": "User preferences for the article.",
+      "Agent": "Customization Options Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "User customization requests.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Edit and Proofread",
+      "Description": "Review the article for grammar and style.",
+      "ExpectedOutput": "Edited and proofread article.",
+      "Agent": "Editing and Proofreading Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "Draft text.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Collect Feedback",
+      "Description": "Gather user feedback on the article.",
+      "ExpectedOutput": "Feedback data.",
+      "Agent": "Feedback Loop Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "Completed article.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Export Article",
+      "Description": "Convert the article into required formats.",
+      "ExpectedOutput": "Formatted article in various formats.",
+      "Agent": "Export and Formatting Options Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "Finalized article.",
+      "ContextFromSyncTasks": ""
+    },
+    {
+      "CreateTask": "Manage Versions",
+      "Description": "Track and manage versions of the article.",
+      "ExpectedOutput": "Version history.",
+      "Agent": "Version Control Agent",
+      "AsyncExecution": true,
+      "ContextFromAsyncTasks": "Changes made to the article.",
+      "ContextFromSyncTasks": ""
+    }
+  ]
+}
+2025-02-10 21:14:31,033 - main - [INFO] - ai_crew_generator.py:main:886 - Generating application...
+2025-02-10 21:14:31,033 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:326 - Generating Streamlit app in directory: artical
+2025-02-10 21:14:31,033 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:335 - Validating JSON structure
+2025-02-10 21:14:31,033 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:353 - Using crew name: article_writer_agent
+2025-02-10 21:14:31,033 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:361 - Custom tools detected in configuration
+2025-02-10 21:14:31,034 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:364 - Generating application files
+2025-02-10 21:14:31,034 - AICrewGenerator - [DEBUG] - ai_crew_generator.py:generate_app:367 - Generating app.py
+2025-02-10 21:14:31,034 - AICrewGenerator - [DEBUG] - ai_crew_generator.py:_generate_app_content:409 - Generating app.py content
+2025-02-10 21:14:31,034 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:372 - Created app.py: artical/app.py
+2025-02-10 21:14:31,034 - AICrewGenerator - [DEBUG] - ai_crew_generator.py:generate_app:375 - Creating .env file
+2025-02-10 21:14:31,035 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:379 - Created .env file: artical/.env
+2025-02-10 21:14:31,035 - AICrewGenerator - [DEBUG] - ai_crew_generator.py:generate_app:382 - Creating requirements.txt
+2025-02-10 21:14:31,035 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:386 - Created requirements.txt: artical/requirements.txt
+2025-02-10 21:14:31,035 - AICrewGenerator - [DEBUG] - ai_crew_generator.py:generate_app:389 - Creating run scripts
+2025-02-10 21:14:31,036 - AICrewGenerator - [DEBUG] - ai_crew_generator.py:_create_run_scripts:615 - Created run.sh: artical/run.sh
+2025-02-10 21:14:31,036 - AICrewGenerator - [DEBUG] - ai_crew_generator.py:_create_run_scripts:624 - Created run.bat: artical/run.bat
+2025-02-10 21:14:31,036 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:391 - Created run scripts
+2025-02-10 21:14:31,036 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:395 - Setting up custom tools
+2025-02-10 21:14:31,036 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:398 - Created tools directory: artical/tools
+2025-02-10 21:14:31,036 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:401 - Successfully generated all application files
+2025-02-10 21:14:31,037 - main - [INFO] - ai_crew_generator.py:main:889 - ==================================================
+2025-02-10 21:14:31,037 - main - [INFO] - ai_crew_generator.py:main:890 - Successfully created Streamlit app in directory: artical
+2025-02-10 21:14:31,037 - main - [INFO] - ai_crew_generator.py:main:891 - ==================================================
+2025-02-10 21:14:31,037 - main - [INFO] - ai_crew_generator.py:main:899 - Generation process completed successfully
+2025-02-10 21:14:31,206 - httpcore.connection - [DEBUG] - _trace.py:trace:47 - close.started
+2025-02-10 21:14:31,206 - httpcore.connection - [DEBUG] - _trace.py:trace:47 - close.complete

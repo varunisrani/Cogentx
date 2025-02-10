@@ -375,9 +375,13 @@ def main():
 
         with st.spinner("Creating your AI agent..."):
             try:
+                # 1. Load the agents including CEO agent
                 agents, ceo_agent = load_agents()
+                
+                # 2. Create tasks based on user requirements
                 tasks = load_tasks(agents, ceo_agent, user_prompt)
                 
+                # 3. Create and run the crew
                 crew = Crew(
                     agents=agents,
                     tasks=tasks,
@@ -385,10 +389,11 @@ def main():
                     manager_agent=ceo_agent
                 )
 
+                # 4. Get the JSON result
                 result = crew.kickoff()
                 
+                # 5. Show success and JSON output
                 st.success("AI Agent created successfully!")
-                
                 st.json(result)
                 
             except Exception as e:

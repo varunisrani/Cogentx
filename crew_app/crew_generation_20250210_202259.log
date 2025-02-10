@@ -1,0 +1,2 @@
+2025-02-10 20:22:59,564 - AICrewGenerator - ERROR - Error generating app: write() argument must be str, not None
+2025-02-10 20:22:59,564 - main - ERROR - Unexpected error: write() argument must be str, not None

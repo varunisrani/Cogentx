@@ -1,0 +1,32 @@
+2025-02-10 20:43:34,335 - root - [INFO] - ai_crew_generator.py:setup_logging:53 - Logging to files:
+2025-02-10 20:43:34,336 - root - [INFO] - ai_crew_generator.py:setup_logging:54 -   Debug log: linkdin/crew_generation_debug_20250210_204334.log
+2025-02-10 20:43:34,336 - root - [INFO] - ai_crew_generator.py:setup_logging:55 -   Info log: linkdin/crew_generation_20250210_204334.log
+2025-02-10 20:43:34,340 - main - [INFO] - ai_crew_generator.py:main:804 - ==================================================
+2025-02-10 20:43:34,340 - main - [INFO] - ai_crew_generator.py:main:805 - Starting CrewAI App Generation Process
+2025-02-10 20:43:34,340 - main - [INFO] - ai_crew_generator.py:main:806 - ==================================================
+2025-02-10 20:43:34,341 - main - [INFO] - ai_crew_generator.py:main:807 - Output Directory: linkdin
+2025-02-10 20:43:34,341 - main - [INFO] - ai_crew_generator.py:main:808 - JSON Configuration Path: /Users/varunisrani/Desktop/CrewAI-Studio/linkdinpost.json
+2025-02-10 20:43:34,341 - main - [INFO] - ai_crew_generator.py:main:838 - Loading JSON configuration...
+2025-02-10 20:43:34,344 - main - [INFO] - ai_crew_generator.py:main:844 - Creating AICrewGenerator instance...
+2025-02-10 20:43:34,344 - AICrewGenerator - [INFO] - ai_crew_generator.py:__init__:63 - ==================================================
+2025-02-10 20:43:34,344 - AICrewGenerator - [INFO] - ai_crew_generator.py:__init__:64 - Initializing AICrewGenerator
+2025-02-10 20:43:34,344 - AICrewGenerator - [INFO] - ai_crew_generator.py:__init__:65 - ==================================================
+2025-02-10 20:43:34,389 - AICrewGenerator - [INFO] - ai_crew_generator.py:__init__:72 - Successfully initialized OpenAI LLM
+2025-02-10 20:43:34,389 - main - [INFO] - ai_crew_generator.py:main:848 - Normalizing JSON format...
+2025-02-10 20:43:34,389 - AICrewGenerator - [INFO] - ai_crew_generator.py:normalize_json_input:628 - Normalizing JSON input format
+2025-02-10 20:44:01,419 - httpx - [INFO] - _client.py:_send_single_request:1038 - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-02-10 20:44:01,459 - AICrewGenerator - [INFO] - ai_crew_generator.py:normalize_json_input:749 - Successfully normalized JSON format
+2025-02-10 20:44:01,461 - main - [INFO] - ai_crew_generator.py:main:853 - Generating application...
+2025-02-10 20:44:01,461 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:326 - Generating Streamlit app in directory: linkdin
+2025-02-10 20:44:01,461 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:335 - Validating JSON structure
+2025-02-10 20:44:01,461 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:353 - Using crew name: LinkedInPostGenerator
+2025-02-10 20:44:01,461 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:364 - Generating application files
+2025-02-10 20:44:01,462 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:372 - Created app.py: linkdin/app.py
+2025-02-10 20:44:01,462 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:379 - Created .env file: linkdin/.env
+2025-02-10 20:44:01,463 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:386 - Created requirements.txt: linkdin/requirements.txt
+2025-02-10 20:44:01,463 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:391 - Created run scripts
+2025-02-10 20:44:01,463 - AICrewGenerator - [INFO] - ai_crew_generator.py:generate_app:401 - Successfully generated all application files
+2025-02-10 20:44:01,463 - main - [INFO] - ai_crew_generator.py:main:856 - ==================================================
+2025-02-10 20:44:01,463 - main - [INFO] - ai_crew_generator.py:main:857 - Successfully created Streamlit app in directory: linkdin
+2025-02-10 20:44:01,463 - main - [INFO] - ai_crew_generator.py:main:858 - ==================================================
+2025-02-10 20:44:01,464 - main - [INFO] - ai_crew_generator.py:main:866 - Generation process completed successfully

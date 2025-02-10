@@ -1,0 +1,117 @@
+{
+    "CrewCreationDetails": {
+      "Name": "MarketResearchAgent",
+      "Process": "sequence",
+      "Agents": [
+        "MarketDataCollector",
+        "DataInsightsGenerator"
+      ],
+      "Tasks": [
+        "Conduct market surveys",
+        "Analyze web traffic",
+        "Create visual data reports",
+        "Coordinate project timeline"
+      ],
+      "ManagerLLM": "gpt-4o-mini",
+      "ManagerAgent": "Project Manager",
+      "Verbose": false,
+      "Memory": "disabled",
+      "Cache": "enabled",
+      "Planning": "agile",
+      "MaxReqMin": 1000
+    },
+    "Tools": [
+      {
+        "tool_id": "tool_01",
+        "name": "SerperDevTool",
+        "type": "Search",
+        "description": "Conduct searches related to market trends.",
+        "availability": true
+      },
+      {
+        "tool_id": "tool_02",
+        "name": "ScrapeWebsiteTool",
+        "type": "Scraping",
+        "description": "Scrape relevant websites for deeper insights.",
+        "availability": true
+      },
+      {
+        "tool_id": "tool_03",
+        "name": "YahooFinanceNewsTool",
+        "type": "News",
+        "description": "Gather financial news impacting market conditions.",
+        "availability": true
+      }
+    ],
+    "Agents": [
+      {
+        "CreateAgent": "MarketDataCollector",
+        "Role": "Automate data gathering from various sources.",
+        "Backstory": "Experience in data collection and analysis in market research.",
+        "Goal": "To gather accurate data on market trends and competitor positioning.",
+        "AllowDelegation": "yes",
+        "Verbose": false,
+        "Cache": "enabled",
+        "LLM": "gpt-4o-mini",
+        "Temperature": 0.5,
+        "MaxIteration": 10,
+        "SelectTools": [
+          "SerperDevTool",
+          "ScrapeWebsiteTool",
+          "YahooFinanceNewsTool"
+        ]
+      },
+      {
+        "CreateAgent": "DataInsightsGenerator",
+        "Role": "Process collected data and generate actionable insights.",
+        "Backstory": "Background in data analytics and report generation.",
+        "Goal": "To analyze customer behavior patterns effectively.",
+        "AllowDelegation": "yes",
+        "Verbose": false,
+        "Cache": "disabled",
+        "LLM": "gpt-4o-mini",
+        "Temperature": 0.5,
+        "MaxIteration": 10,
+        "SelectTools": []
+      }
+    ],
+    "Tasks": [
+      {
+        "CreateTask": "Conduct market surveys",
+        "Description": "Gather consumer feedback through structured surveys.",
+        "ExpectedOutput": "Survey results and insights.",
+        "Agent": "MarketDataCollector",
+        "AsyncExecution": true,
+        "ContextFromAsyncTasks": "Feedback from target audiences.",
+        "ContextFromSyncTasks": ""
+      },
+      {
+        "CreateTask": "Analyze web traffic",
+        "Description": "Examine web traffic and user behavior.",
+        "ExpectedOutput": "Web traffic analysis report.",
+        "Agent": "MarketDataCollector",
+        "AsyncExecution": true,
+        "ContextFromAsyncTasks": "",
+        "ContextFromSyncTasks": ""
+      },
+      {
+        "CreateTask": "Create visual data reports",
+        "Description": "Visual representation of market data and trends.",
+        "ExpectedOutput": "Visual data reports.",
+        "Agent": "DataInsightsGenerator",
+        "AsyncExecution": false,
+        "ContextFromAsyncTasks": "",
+        "ContextFromSyncTasks": "Processed data for visualization."
+      },
+      {
+        "CreateTask": "Coordinate project timeline",
+        "Description": "Ensure timely execution of all tasks.",
+        "ExpectedOutput": "Timeline and progress reports.",
+        "Agent": "Project Manager",
+        "AsyncExecution": false,
+        "ContextFromAsyncTasks": "",
+        "ContextFromSyncTasks": "Updates from all agents."
+      }
+    ]
+  }
+  

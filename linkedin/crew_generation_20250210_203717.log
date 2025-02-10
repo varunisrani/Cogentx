@@ -1,0 +1,3 @@
+2025-02-10 20:37:17,312 - AICrewGenerator - ERROR - Missing required key 'CrewCreationDetails' in JSON configuration
+2025-02-10 20:37:17,312 - AICrewGenerator - ERROR - Error generating app: Missing required key 'CrewCreationDetails' in JSON configuration
+2025-02-10 20:37:17,312 - main - ERROR - Unexpected error: Missing required key 'CrewCreationDetails' in JSON configuration

@@ -1,0 +1,223 @@
+{
+  "Crew creation details": {
+    "Name": "article_writer_agent",
+    "Process": "sequence", 
+    "Agents": [
+      "Natural Language Generation Agent",
+      "Content Structuring Agent", 
+      "Topic Research Agent",
+      "Customization Options Agent",
+      "Editing and Proofreading Agent",
+      "Feedback Loop Agent",
+      "Export and Formatting Options Agent",
+      "Version Control Agent"
+    ],
+    "Tasks": [
+      "Generate Text",
+      "Structure Content",
+      "Research Topic", 
+      "Customize Options",
+      "Edit and Proofread",
+      "Collect Feedback",
+      "Export Article",
+      "Manage Versions"
+    ],
+    "Manager LLM": "OpenAI GPT-4",
+    "Manager Agent": "Implementation Agent",
+    "Verbose": true,
+    "Memory": true,
+    "Cache": true,
+    "Planning": "microservices",
+    "Max req/min": 1000
+  },
+  "Tools": {
+    "Natural Language Generation Agent": "CustomApiTool (OpenAI GPT-3 or GPT-4 API)",
+    "Content Structuring Agent": "CustomCodeInterpreterTool (Python's NLTK)",
+    "Topic Research Agent": "CustomApiTool (Google Search API)",
+    "Customization Options Agent": "CustomCodeInterpreterTool (React)",
+    "Editing and Proofreading Agent": "CustomApiTool (Grammarly API)", 
+    "Feedback Loop Agent": "CustomApiTool (Google Forms)",
+    "Export and Formatting Options Agent": "CustomCodeInterpreterTool (Pandoc)",
+    "Version Control Agent": "CustomCodeInterpreterTool (Git)"
+  },
+  "Agents": [
+    {
+      "Create agent": "Natural Language Generation Agent",
+      "Role": "Generate coherent text based on prompts",
+      "Backstory": "Trained on diverse datasets, specializing in text generation.",
+      "Goal": "Produce high-quality drafts for articles.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "OpenAI GPT-4",
+      "Temperature": 0.7,
+      "Max iteration": 3,
+      "Select tools": ["CustomApiTool"]
+    },
+    {
+      "Create agent": "Content Structuring Agent", 
+      "Role": "Organize content logically into sections",
+      "Backstory": "Utilizes linguistic algorithms for content mapping.",
+      "Goal": "Create a structured outline for articles.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "Python NLTK",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": ["CustomCodeInterpreterTool"]
+    },
+    {
+      "Create agent": "Topic Research Agent",
+      "Role": "Gather relevant data and references",
+      "Backstory": "Experienced in data scraping and keyword analysis.",
+      "Goal": "Inform articles with accurate and up-to-date information.",
+      "Allow delegation": "yes", 
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "Google Search API",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": ["CustomApiTool"]
+    },
+    {
+      "Create agent": "Customization Options Agent",
+      "Role": "Provide customization for article tone and style",
+      "Backstory": "Proficient in user interface design and user experience.",
+      "Goal": "Allow users to personalize their articles.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "React",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": ["CustomCodeInterpreterTool"]
+    },
+    {
+      "Create agent": "Editing and Proofreading Agent",
+      "Role": "Ensure articles are grammatically correct",
+      "Backstory": "Utilizes advanced grammar-checking algorithms.",
+      "Goal": "Deliver polished and professional articles.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "Grammarly API",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": ["CustomApiTool"]
+    },
+    {
+      "Create agent": "Feedback Loop Agent",
+      "Role": "Collect user feedback for improvement",
+      "Backstory": "Aims for continuous enhancement based on user input.",
+      "Goal": "Iteratively improve the article generation process.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "Google Forms",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": ["CustomApiTool"]
+    },
+    {
+      "Create agent": "Export and Formatting Options Agent",
+      "Role": "Export articles in various formats",
+      "Backstory": "Expert in document conversion and formatting.",
+      "Goal": "Provide multiple output formats for user articles.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "Pandoc",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": ["CustomCodeInterpreterTool"]
+    },
+    {
+      "Create agent": "Version Control Agent",
+      "Role": "Manage changes and versions of articles",
+      "Backstory": "Utilizes Git for tracking changes and collaboration.",
+      "Goal": "Allow users to revert and compare article versions.",
+      "Allow delegation": "yes",
+      "Verbose": true,
+      "Cache": true,
+      "LLM": "Git",
+      "Temperature": 0.5,
+      "Max iteration": 3,
+      "Select tools": ["CustomCodeInterpreterTool"]
+    }
+  ],
+  "Tasks": [
+    {
+      "Create task": "Generate Text",
+      "Description": "Generate an initial draft based on user input.",
+      "Expected output": "Draft text for the article.",
+      "Agent": "Natural Language Generation Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "User input and article requirements.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Structure Content",
+      "Description": "Organize the draft into a logical structure.",
+      "Expected output": "Structured outline of the article.",
+      "Agent": "Content Structuring Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "Draft text generated.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Research Topic",
+      "Description": "Gather relevant information and statistics.",
+      "Expected output": "Research data and references.",
+      "Agent": "Topic Research Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "Topic of the article.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Customize Options",
+      "Description": "Allow users to customize the article tone and style.",
+      "Expected output": "User preferences for the article.",
+      "Agent": "Customization Options Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "User customization requests.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Edit and Proofread",
+      "Description": "Review the article for grammar and style.",
+      "Expected output": "Edited and proofread article.",
+      "Agent": "Editing and Proofreading Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "Draft text.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Collect Feedback",
+      "Description": "Gather user feedback on the article.",
+      "Expected output": "Feedback data.",
+      "Agent": "Feedback Loop Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "Completed article.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Export Article",
+      "Description": "Convert the article into required formats.",
+      "Expected output": "Formatted article in various formats.",
+      "Agent": "Export and Formatting Options Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "Finalized article.",
+      "Context from sync tasks": ""
+    },
+    {
+      "Create task": "Manage Versions",
+      "Description": "Track and manage versions of the article.",
+      "Expected output": "Version history.",
+      "Agent": "Version Control Agent",
+      "Async execution": "yes",
+      "Context from async tasks": "Changes made to the article.",
+      "Context from sync tasks": ""
+    }
+  ]
+}
