@@ -2,8 +2,6 @@ import streamlit as st
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
-import pydantic_ai.models.groq as groq_module
-from pydantic_ai.models.anthropic import AnthropicModel
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.tools import Tool
 from pydantic_graph import Graph, BaseNode, End, GraphRunContext
@@ -164,49 +162,24 @@ class TaskConfig(BaseModel):
     )
 
 # Model Provider configurations
-def create_groq_model_with_fallback(primary_model: str = "deepseek-r1-distill-qwen-32b", temperature: float = 0.7) -> Any:
-    api_key = "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"
-    try:
-        model = groq_module.GroqModel(
-            model_name=primary_model,
-            api_key=api_key
-        )
-        # Test the model with a simple prompt
-        test_prompt = "Test connection"
-        asyncio.get_event_loop().run_until_complete(model.request(test_prompt, max_tokens=10))
-        log_message(f"Successfully initialized {primary_model}", agent_name="System")
-        return model
-    except Exception as e:
-        log_message(
-            f"Error initializing {primary_model}, falling back to llama-3.3-70b-versatile: {str(e)}",
-            level="warning",
-            agent_name="System"
-        )
-    return groq_module.GroqModel(
-            model_name="llama-3.3-70b-versatile",
-        api_key=api_key
-    )
-
-def create_anthropic_model(model_name: str = "claude-3-opus-20240229", temperature: float = 0.7) -> AnthropicModel:
-    api_key = os.getenv('ANTHROPIC_API_KEY')
+def create_model(provider_and_model: str = "OpenAI:gpt-4o-mini", temperature: float = 0.7) -> Any:
+    api_key = os.getenv('OPENAI_API_KEY')
     if not api_key:
-        raise ValueError("Anthropic API key not set in .env file")
-    return AnthropicModel(
+        raise ValueError("OpenAI API key not found in environment")
+    
+    # Initialize OpenAIModel without temperature
+    model = OpenAIModel(
         api_key=api_key,
-        model_name=model_name
+        model_name="gpt-4o-mini"
     )
-
-MODEL_CONFIG = {
-    "Groq": create_groq_model_with_fallback,
-    "Anthropic": create_anthropic_model
-}
-
-def create_model(provider_and_model: str = "Groq:deepseek-r1-distill-qwen-32b", temperature: float = 0.7) -> Any:
-    if ":" in provider_and_model:
-        provider, model = provider_and_model.split(":")
-        if provider in MODEL_CONFIG:
-            return create_groq_model_with_fallback(model, temperature)
-    return create_groq_model_with_fallback("deepseek-r1-distill-qwen-32b", temperature)
+    
+    # Set temperature through the model's configuration if needed
+    if hasattr(model, 'set_temperature'):
+        model.set_temperature(temperature)
+    elif hasattr(model, 'config'):
+        model.config['temperature'] = temperature
+    
+    return model
 
 # Define node classes for the graph
 @dataclass
@@ -272,7 +245,7 @@ class AnalysisNode(BaseNode):
             })
             
             # Log the CEO's strategic decisions
-        log_message(
+            log_message(
                 f"CEO strategic analysis completed. Strategic plan:\n\n{result.data}",
                 agent_name="CEO Agent"
             )
@@ -284,7 +257,7 @@ class AnalysisNode(BaseNode):
                 to_agent="Architecture Specialist"
             )
             
-        return ArchitectureNode(self.agent, self.requirements, result.data)
+            return ArchitectureNode(self.agent, self.requirements, result.data)
             
         except Exception as e:
             error_msg = f"CEO strategic planning error: {str(e)}"
@@ -372,7 +345,7 @@ class ArchitectureNode(BaseNode):
                 to_agent="Implementation Agent"
             )
             
-        return ImplementationNode(self.agent, self.requirements, result.data)
+            return ImplementationNode(self.agent, self.requirements, result.data)
             
         except Exception as e:
             error_msg = f"Error during architecture design: {str(e)}"
@@ -460,7 +433,7 @@ class ImplementationNode(BaseNode):
                 to_agent="Code Generator"
             )
             
-        return FinalNode(self.agent, result.data)
+            return FinalNode(self.agent, result.data)
             
         except Exception as e:
             error_msg = f"Error during implementation planning: {str(e)}"
@@ -475,12 +448,35 @@ if not OPENAI_API_KEY:
 openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
 # Initialize Supabase client for vector search
-auth_url = os.getenv('SUPABASE_URL')
-auth_key = os.getenv('SUPABASE_KEY')
-if not auth_url or not auth_key:
-    log_message("Supabase configuration missing in environment", level="error")
+SUPABASE_URL = "https://rzaukiglowabowqevpem.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ6YXVraWdsb3dhYm93cWV2cGVtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxODk3NDcsImV4cCI6MjAzMzc2NTc0N30.wSQnUlCio1DpXHj0xa5_6W6KjyUzXv4kKWyhpziUx_s"
+
+if not SUPABASE_URL or not SUPABASE_KEY:
+    log_message("Supabase configuration missing", level="error")
     raise ValueError("Supabase configuration missing")
-supabase = create_client(auth_url, auth_key)
+
+try:
+    log_message(f"Attempting to initialize Supabase client with URL: {SUPABASE_URL}", level="info")
+    log_message(f"Using Supabase key starting with: {SUPABASE_KEY[:10]}...", level="debug")
+    
+    # Create the client without immediate authentication
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    
+    # Test a simple query to verify the connection
+    try:
+        # Try to fetch a single row from any table to test connection
+        response = supabase.from_('embeddings').select('*').limit(1).execute()
+        log_message("Successfully tested Supabase connection", level="info")
+    except Exception as query_error:
+        log_message(f"Connection test failed: {str(query_error)}", level="warning")
+        log_message("Proceeding with initialization despite test failure", level="info")
+    
+    log_message("Successfully initialized Supabase client", level="info")
+except Exception as e:
+    error_msg = f"Error initializing Supabase client: {str(e)}"
+    log_message(error_msg, level="error")
+    log_message("Please check your Supabase configuration", level="error")
+    raise ValueError(error_msg)
 
 async def get_embedding(text: str) -> List[float]:
     """Get embedding vector from OpenAI."""
@@ -807,17 +803,17 @@ If any aspect fails, provide specific details about what needs improvement."""
                 else:
                     evaluation = review_result.data
                 
-                    log_message(
-                    f"CEO Review Results:\n{json.dumps(evaluation, indent=2)}",
-                        agent_name="CEO Agent"
-                    )
-
-                if evaluation.get("needs_iteration", False):
                 log_message(
-                        f"Quality standards not met. Issues:\n{json.dumps(evaluation.get('issues', []), indent=2)}",
-                    level="warning",
+                    f"CEO Review Results:\n{json.dumps(evaluation, indent=2)}",
                     agent_name="CEO Agent"
                 )
+
+                if evaluation.get("needs_iteration", False):
+                    log_message(
+                        f"Quality standards not met. Issues:\n{json.dumps(evaluation.get('issues', []), indent=2)}",
+                        level="warning",
+                        agent_name="CEO Agent"
+                    )
                     
                     # If iteration is needed, create new implementation details with fixes
                     iteration_prompt = f"""Based on the review findings:
@@ -841,17 +837,17 @@ If any aspect fails, provide specific details about what needs improvement."""
                     return ImplementationNode(self.agent, "Updated requirements", iteration_result.data)
                 
                 if evaluation.get("final_approval", False):
-            log_message(
+                    log_message(
                         "CEO approved final output. Delivering to user.",
-                agent_name="CEO Agent"
-            )
+                        agent_name="CEO Agent"
+                    )
                     return End({
                         "code": self.generated_code,
                         "evaluation": evaluation,
                         "agent_outputs": self.agent_outputs
                     })
                 else:
-            log_message(
+                    log_message(
                         "CEO rejected output. Starting new iteration.",
                         level="warning",
                         agent_name="CEO Agent"
@@ -861,9 +857,9 @@ If any aspect fails, provide specific details about what needs improvement."""
             except json.JSONDecodeError as e:
                 log_message(
                     f"Error parsing CEO review results: {str(e)}. Raw response:\n{review_result.data}",
-                level="error",
-                agent_name="CEO Agent"
-            )
+                    level="error",
+                    agent_name="CEO Agent"
+                )
                 # Create a default evaluation with error information
                 evaluation = {
                     "meets_requirements": False,
@@ -945,15 +941,15 @@ class AIAgentSystem:
         log_message("CEO initiating team creation", agent_name="CEO Agent")
         
         try:
-            # Create models for each agent type with fallback handling
-            ceo_model = OpenAIModel(model_name="gpt-4o-mini", api_key=OPENAI_API_KEY)
-            architecture_model = OpenAIModel(model_name="gpt-4o-mini", api_key=OPENAI_API_KEY)
-            implementation_model = OpenAIModel(model_name="gpt-4o-mini", api_key=OPENAI_API_KEY)
-            code_generator_model = OpenAIModel(model_name="gpt-4o-mini", api_key=OPENAI_API_KEY)
+            # Create models for each agent type
+            ceo_model = OpenAIModel(model_name="gpt-4o-mini", api_key=os.getenv('OPENAI_API_KEY'))
+            architecture_model = OpenAIModel(model_name="gpt-4o-mini", api_key=os.getenv('OPENAI_API_KEY'))
+            implementation_model = OpenAIModel(model_name="gpt-4o-mini", api_key=os.getenv('OPENAI_API_KEY'))
+            code_generator_model = OpenAIModel(model_name="gpt-4o-mini", api_key=os.getenv('OPENAI_API_KEY'))
             
-        ceo_agent = Agent(
+            ceo_agent = Agent(
                 model=ceo_model,
-            name="CEO Agent",
+                name="CEO Agent",
                 system_prompt=(
                     "You are the CEO of an AI development organization. "
                     "Your role is to:\n"
@@ -964,12 +960,12 @@ class AIAgentSystem:
                     "5. Maintain focus on web functionality and user experience\n"
                     "Lead your team to create production-ready solutions that exceed expectations."
                 ),
-            tools=self.tools
-        )
+                tools=self.tools
+            )
 
             # Create specialized agents under CEO's direction
-        agents = [
-            Agent(
+            agents = [
+                Agent(
                     model=architecture_model,
                     name="Architecture Specialist",
                     system_prompt=(
@@ -979,9 +975,9 @@ class AIAgentSystem:
                         "3. Efficient tool integration patterns\n"
                         "4. Performance optimization for web deployment"
                     ),
-                tools=self.tools
-            ),
-            Agent(
+                    tools=self.tools
+                ),
+                Agent(
                     model=implementation_model,
                     name="Implementation Agent",
                     system_prompt=(
@@ -1013,7 +1009,7 @@ class AIAgentSystem:
         except Exception as e:
             log_message(f"Error during agent creation: {str(e)}", level="error", agent_name="CEO Agent")
             # Create all agents with fallback model
-            fallback_model = OpenAIModel(model_name="gpt-4o-mini", api_key=OPENAI_API_KEY)
+            fallback_model = OpenAIModel(model_name="gpt-4o-mini", api_key=os.getenv('OPENAI_API_KEY'))
             
             ceo_agent = Agent(
                 model=fallback_model,
@@ -1041,11 +1037,11 @@ class AIAgentSystem:
                         "3. Efficient tool integration patterns\n"
                         "4. Performance optimization for web deployment"
                     ),
-                tools=self.tools
-            ),
-            Agent(
+                    tools=self.tools
+                ),
+                Agent(
                     model=fallback_model,
-                name="Implementation Agent",
+                    name="Implementation Agent",
                     system_prompt=(
                         "Implement solutions with:\n"
                         "1. Clean, maintainable code structure\n"
@@ -1053,9 +1049,9 @@ class AIAgentSystem:
                         "3. Comprehensive logging\n"
                         "4. Web-optimized performance"
                     ),
-                tools=self.tools
-            ),
-            Agent(
+                    tools=self.tools
+                ),
+                Agent(
                     model=fallback_model,
                     name="Code Generator",
                     system_prompt=(
@@ -1065,12 +1061,12 @@ class AIAgentSystem:
                         "3. Performance optimization\n"
                         "4. Comprehensive documentation"
                     ),
-                tools=self.tools
-            )
-        ]
+                    tools=self.tools
+                )
+            ]
             
             log_message("Created agents with fallback model due to initialization error", level="warning", agent_name="CEO Agent")
-        return agents, ceo_agent
+            return agents, ceo_agent
 
     def process_request(self, user_requirements: str) -> str:
         log_message("CEO initiating project execution", agent_name="CEO Agent")
